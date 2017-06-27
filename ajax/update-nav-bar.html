@@ -1,0 +1,27 @@
+<h2>Section menu</h2>
+<ul class="list-group menu list-unstyled" id="side-bar-nav">
+    <li>
+        <h3 class="wb-navcurr">HYDEX update information</h3>
+        <ul class="list-group menu list-unstyled">
+            <li><a class="list-group-item" href="update_name_status_office.html">Name, status, operating office, association</a></li>
+            <li><a class="list-group-item" href="update_program_records.html">Program type and record collection</a></li>
+            <li><a class="list-group-item" href="update_cost_arrangement.html">Cost arrangements</a></li>
+            <li><a class="list-group-item" href="update_spatial_location.html">Spatial location</a></li>
+            <li><a class="list-group-item" href="update_travel_access.html">Travel access</a></li>
+            <li><a class="list-group-item" href="update_device_communication.html">Devices and communication</a></li>
+            <li><a class="list-group-item" href="update_datum.html">Datum and transformations</a></li>
+            <li><a class="list-group-item" href="update_drainage_area.html">Drainage Area</a></li>
+            <li><a class="list-group-item" href="update_facility.html">Facilities</a></li>
+            <li><a class="list-group-item" href="update_image_type.html">Associated files</a></li>
+            <li><a class="list-group-item" href="update_use.html">Station Use</a></li>
+        </ul>
+    </li>
+</ul>
+
+<script type="text/javascript">
+    // make corresponding menu item active
+    let nav = document.getElementById('side-bar-nav');
+    let filename = document.location.pathname.replace(/\//g, '');
+    let item = nav.querySelector(`[href="${filename}"]`);
+    item.classList.add('active');
+</script>

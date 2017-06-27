@@ -1,0 +1,13 @@
+# preserve ability to have index of entire site
+DirectoryIndex 
+Header set X-UA-Compatible "IE=Edge"
+Header unset ETag
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+
+# URL rewrite to avoid need of adding .html
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html

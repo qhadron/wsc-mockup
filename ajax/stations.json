@@ -1,0 +1,32 @@
+{
+    data: [{
+        "Station Id": "<a href='4_Update_Landing_Page.html'>99ZZ204</a>",
+        "Name": "Ottawa at Ottawa",
+        "Prov. Code": "ON",
+        "Lat.": "41°12'13.4\" N",
+        "Long.": "72°12'34.5\" W ",
+        "Status": "Active",
+    }, {
+        "Station Id": "<a href="#
+        unimplemented ">99ZZ205</a>",
+        "Name": "ANOTHER OTTAWA",
+        "Prov. Code": "ON",
+        "Lat.": "45°18'00.0\" N ",
+        "Long.": "72°12'34.5\" W ",
+        "Status": "Active",
+    }, {
+        "Station Id": "<a href='4_Update_Landing_Page.html'>99ZZ204</a>",
+        "Name": "Ottawa at Ottawa",
+        "Prov. Code": "ON",
+        "Lat.": "41°12'13.4\" N",
+        "Long.": "72°12'34.5\" W ",
+        "Status": "Active",
+    }, {
+        "Station Id": "<a href='4_Update_Landing_Page.html'>99ZZ204</a>",
+        "Name": "Ottawa at Ottawa",
+        "Prov. Code": "ON",
+        "Lat.": "41°12'13.4\" N",
+        "Long.": "72°12'34.5\" W ",
+        "Status": "Active",
+    }, ]
+}
