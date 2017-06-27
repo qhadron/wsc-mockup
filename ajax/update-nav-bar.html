@@ -21,7 +21,7 @@
 <script type="text/javascript">
     // make corresponding menu item active
     let nav = document.getElementById('side-bar-nav');
-    let filename = document.location.pathname.replace(/\//g, '');
+    let filename = document.location.pathname.replace(/\/(.*?\/)?/, '');
     let item = nav.querySelector(`[href="${filename}"]`);
     item.classList.add('active');
 </script>
