@@ -70,6 +70,10 @@ function populateDateSelectors() {
 					let date = new Date(0, 0, 0, randInt(24), randInt(60), randInt(60));
 					c.value = date.toISOString().slice(-13, -5);
 				}
+				// checkbox
+				else if (c.tagName === 'INPUT' && type === 'checkbox') {
+					c.checked = Math.random() >= 0.5;
+				}
 			});
 		}
 
