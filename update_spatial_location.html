@@ -117,165 +117,208 @@
 						You have selected station 02KF015, Graham Creek.
 					</section>
 					<form class="form-horizontal">
-						<h2>Spatial Location</h2>
-						<div class="form-group">
-							<label for="data4" class="col-sm-4 control-label">Province</label>
-							<div class="col-sm-8">
-								<select name="data4" id="data4" class="form-control">
-								<option value="1">Option&#32;1</option>
-								<option value="2">Option&#32;2</option>
-								<option value="3">Option&#32;3</option>
-								<option value="4">Option&#32;4</option>
-							</select>
+						<details open="open" id="location-panel">
+							<summary>
+								<h2>Spatial Location</h2>
+								<date-selector container-selector="#location-panel"></date-selector>
+							</summary>
+							<div class="form-group">
+								<label for="data4" class="col-sm-4 control-label required">Province</label>
+								<div class="col-sm-8">
+									<select name="data4" id="data4" class="form-control">
+<option value="AB ">ALBERTA (AB)</option>
+<option value="BC ">BRITISH COLUMBIA (BC)</option>
+<option value="MB ">MANITOBA (MB)</option>
+<option value="NB ">NEW BRUNSWICK (NB)</option>
+<option value="NL ">NEWFOUNDLAND AND LABRADOR (NL)</option>
+<option value="NS ">NOVA SCOTIA (NS)</option>
+<option value="NT ">NORTHWEST TERRITORIES (NT)</option>
+<option value="NU ">NUNAVUT (NU)</option>
+<option value="ON ">ONTARIO (ON)</option>
+<option value="PE ">PRINCE EDWARD ISLAND (PE)</option>
+<option value="QC ">QUEBEC (QC)</option>
+<option value="SK ">SASKATCHEWAN (SK)</option>
+<option value="YT ">YUKON TERRITORY (YT)</option>
+<option value="AK1">ALASKA (YT)</option>
+<option value="AK2">ALASKA (BC)</option>
+<option value="ID ">IDAHO (BC)</option>
+<option value="ME1">MAINE (NB)</option>
+<option value="ME2">MAINE (QC)</option>
+<option value="MI ">MICHIGAN (ON)</option>
+<option value="MN1">MINNESOTA (ON)</option>
+<option value="MN2">MINNESOTA (MB)</option>
+<option value="MT1">MONTANA (AB)</option>
+<option value="MT2">MONTANA (SK)</option>
+<option value="MT3">MONTANA (BC)</option>
+<option value="ND1">NORTH DAKOTA (MB)</option>
+<option value="ND2">NORTH DAKOTA (SK)</option>
+<option value="NH ">NEW HAMPHSIRE (QC)</option>
+<option value="NY1">NEW YORK (ON)</option>
+<option value="NY2">NEW YORK (QC)</option>
+<option value="OH ">OHIO (ON)</option>
+<option value="PA ">PENNSYLVANIA (ON)</option>
+<option value="VT ">VERMONT (QC)</option>
+<option value="WA ">WASHINGTON (BC)</option>
+<option value="WI ">WISCONSIN (ON)</option>							</select>
+								</div>
 							</div>
-						</div>
 
-						<hr>
+							<hr>
 
-						<script type="text/javascript">
-							window.addEventListener('load', function() {
-								Array.from(document.querySelectorAll('.degree-input-group'))
-									.forEach(function(group) {
-										let l = group.querySelector(".longform");
-										let d = group.querySelector(".deg");
-										let m = group.querySelector(".min");
-										let s = group.querySelector(".sec");
+							<script type="text/javascript">
+								window.addEventListener('load', function() {
+									Array.from(document.querySelectorAll('.degree-input-group'))
+										.forEach(function(group) {
+											let l = group.querySelector(".longform");
+											let d = group.querySelector(".deg");
+											let m = group.querySelector(".min");
+											let s = group.querySelector(".sec");
 
-										// prepend '0's to a num not as wide as size
-										// pad(2, 4) => '0002'
-										function pad(num, size) {
-											var s = "" + num;
-											while (s.length < size) s = '0' + s;
-											return s;
-										}
+											// prepend '0's to a num not as wide as size
+											// pad(2, 4) => '0002'
+											function pad(num, size) {
+												var s = "" + num;
+												while (s.length < size) s = '0' + s;
+												return s;
+											}
 
-										// formats long representation
-										function formatLong() {
-											l.value = Number(l.value).toFixed(5);
-										}
+											// formats long representation
+											function formatLong() {
+												l.value = Number(l.value).toFixed(5);
+											}
 
-										// formats short representation
-										function formatShort() {
-											d.value = pad(d.value, 2);
-											m.value = pad(m.value, 2);
-											s.value = pad(Number(s.value).toFixed(1), 4);
-										}
+											// formats short representation
+											function formatShort() {
+												d.value = pad(d.value, 2);
+												m.value = pad(m.value, 2);
+												s.value = pad(Number(s.value).toFixed(1), 4);
+											}
 
-										function onLongChange() {
-											let v = l.value || 0;
-											let deg, min, sec;
-											deg = Math.floor(v);
-											v -= deg;
-											v *= 60;
-											min = Math.floor(v);
-											v -= min;
-											v *= 60;
-											sec = v;
-											d.value = deg;
-											m.value = min;
-											s.value = sec;
-											// format fields
-											formatLong();
-											formatShort();
-										}
+											function onLongChange() {
+												let v = l.value || 0;
+												let deg, min, sec;
+												deg = Math.floor(v);
+												v -= deg;
+												v *= 60;
+												min = Math.floor(v);
+												v -= min;
+												v *= 60;
+												sec = v;
+												d.value = deg;
+												m.value = min;
+												s.value = sec;
+												// format fields
+												formatLong();
+												formatShort();
+											}
 
-										function onShortChange() {
-											let
-												deg = parseFloat(d.value) || 0,
-												min = parseFloat(m.value) || 0,
-												sec = parseFloat(s.value) || 0;
-											let v;
-											v = deg + (min + sec / 60) / 60;
-											l.value = v;
-											// format fields
-											formatShort();
-											formatLong();
-										}
+											function onShortChange() {
+												let
+													deg = parseFloat(d.value) || 0,
+													min = parseFloat(m.value) || 0,
+													sec = parseFloat(s.value) || 0;
+												let v;
+												v = deg + (min + sec / 60) / 60;
+												l.value = v;
+												// format fields
+												formatShort();
+												formatLong();
+											}
 
-										onLongChange();
-										l.addEventListener("blur", onLongChange);
-										d.addEventListener("blur", onShortChange);
-										m.addEventListener("blur", onShortChange);
-										s.addEventListener("blur", onShortChange);
-									});
-							});
-						</script>
-						<style type="text/css">
-							.degree-input-group .deg,
-							.degree-input-group .min {
-								width: 2em;
-							}
-							
-							.degree-input-group .sec {
-								width: 3em;
-							}
-						</style>
-						<div class="form-group degree-input-group">
-							<label class="control-label col-sm-4 required">Latitude <span>(ddd.ddddd)</span></label>
-							<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
-							<label class="control-label"><span>(ddmmss.s)</span></label>
-							<input type="text" class="deg" maxlength="3">
-							<input type="text" class="min" maxlength="2">
-							<input type="text" class="sec" maxlength="4">
-						</div>
-						<div class="form-group degree-input-group">
-							<label class="control-label col-sm-4 required">Longitude <span>(ddd.ddddd)</span></label>
-							<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
-							<label class="control-label"><span>(ddmmss.s)</span></label>
-							<input type="text" class="deg" maxlength="3">
-							<input type="text" class="min" maxlength="2">
-							<input type="text" class="sec" maxlength="4">
-						</div>
+											onLongChange();
+											l.addEventListener("blur", onLongChange);
+											d.addEventListener("blur", onShortChange);
+											m.addEventListener("blur", onShortChange);
+											s.addEventListener("blur", onShortChange);
+										});
+								});
+							</script>
+							<style type="text/css">
+								.degree-input-group .deg,
+								.degree-input-group .min {
+									width: 2em;
+								}
+								
+								.degree-input-group .sec {
+									width: 3em;
+								}
+							</style>
+							<div class="form-group degree-input-group">
+								<label class="control-label col-sm-4 required">Latitude <span>(ddd.ddddd)</span></label>
+								<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
+								<label class="control-label"><span>(ddmmss.s)</span></label>
+								<input type="text" class="deg" maxlength="3">
+								<input type="text" class="min" maxlength="2">
+								<input type="text" class="sec" maxlength="4">
+							</div>
+							<div class="form-group degree-input-group">
+								<label class="control-label col-sm-4 required">Longitude <span>(ddd.ddddd)</span></label>
+								<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
+								<label class="control-label"><span>(ddmmss.s)</span></label>
+								<input type="text" class="deg" maxlength="3">
+								<input type="text" class="min" maxlength="2">
+								<input type="text" class="sec" maxlength="4">
+							</div>
 
-						<hr>
+							<hr>
 
-						<div class="form-group">
-							<label for="data4" class="col-sm-4 control-label">Horizontal Datum</label>
-							<div class="col-sm-8">
-								<select name="data4" id="data4" class="form-control">
-<option value="1">World Geodetic System 1984</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select></div>
-						</div>
-						<div class="form-group">
-							<label for="data4" class="col-sm-4 control-label">Location source</label>
-							<div class="col-sm-8">
-								<select name="data4" id="data4" class="form-control">
-<option value="1">Global positioning System - STANDARD</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
+							<div class="form-group">
+								<label for="data4" class="col-sm-4 control-label">Horizontal Datum</label>
+								<div class="col-sm-8">
+									<select name="data4" id="data4" class="form-control">
+<option value="01">NORTH AMERICAN DATUM 1927</option>
+<option value="02">NORTH AMERICAN DATUM 1983</option>
+<option value="03">WORLD GEODETIC SYSTEM 1984</option>
+									</select></div>
+							</div>
+							<div class="form-group">
+								<label for="data4" class="col-sm-4 control-label">Location source</label>
+								<div class="col-sm-8">
+									<select name="data4" id="data4" class="form-control">
+<option value="01">GLOBAL POSITIONING SYSTEM - STANDARD</option>
+<option value="02">GLOBAL POSITIONING SYSTEM - DIFFERENTIAL</option>
+<option value="03">GLOBAL POSITIONING SYSTEM - WAAS</option>
+<option value="04">GLOBAL POSITIONING SYSTEM - CANADIAN DIFFERENTIAL</option>
+<option value="05">GLOBAL POSITIONING SYSTEM - OTHER</option>
+<option value="06">DIGITAL MAP - REGIONAL</option>
+<option value="07">DIGITAL MAP - NTS</option>
+<option value="08">PAPER MAP - NTS</option>
+<option value="09">PAPER MAP - OTHER</option>
 </select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="data4" class="col-sm-4 control-label">Time Zone</label>
-							<div class="col-sm-8">
-								<select name="data4" id="data4" class="form-control">
-<option value="1">EST</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
+							<div class="form-group">
+								<label for="data4" class="col-sm-4 control-label">Time Zone</label>
+								<div class="col-sm-8">
+									<select name="data4" id="data4" class="form-control">
+<option value="1">MST</option>
+<option value="2">CST</option>
+<option value="3">EST</option>
+<option value="4">NST</option>
+<option value="5">YST</option>
+<option value="6">AST</option>
+<option value="7">AKST</option>
+<option value="8">PST</option>
 </select>
+								</div>
 							</div>
-						</div>
 
-						<hr>
-						<div class="form-group" remark="Location">
-						</div>
+							<hr>
+							<div class="form-group" remark="Location">
+							</div>
 
-						<div class="form-group" effective-date="Location">
-						</div>
+							<div class="form-group" effective-date="Location">
+							</div>
 
+						</details>
 						<div class="form-group" data-ajax-replace="ajax/submit-button.html">
 						</div>
+					</form>
 
-						<dl id="wb-dtmd">
-							<dt>Date modified:&#32;</dt>
-							<dd><time property="dateModified">2014-02-19</time></dd>
-						</dl>
+					<dl id="wb-dtmd">
+						<dt>Date modified:&#32;</dt>
+						<dd><time property="dateModified">2014-02-19</time></dd>
+					</dl>
 				</main>
 				<nav role="navigation" id="wb-sec" typeof="SiteNavigationElement" class="col-md-3 col-md-pull-9 visible-md visible-lg" data-ajax-replace="ajax/update-nav-bar.html">
 				</nav>
