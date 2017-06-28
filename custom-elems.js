@@ -2,6 +2,10 @@ function randInt(range, start) {
 	return Math.floor(Math.random() * range) + (start || 0);
 }
 
+function waitabit(time, ...args) {
+	return new Promise(resolve => setTimeout(resolve, time, ...args));
+}
+
 function populateDateSelectors() {
 	const newEntryText = 'New Entry';
 
@@ -66,10 +70,8 @@ function populateDateSelectors() {
 		let showOldData = function(date) {
 			let controls = getControls();
 
-			// disable all controls
-			controls.forEach(c => c.disabled = true);
-
 			// populate with default data for controls
+			// note: this needs to be done before disabling to dispatch the onchange events
 			controls.forEach(c => {
 				const type = c.getAttribute('type') || c.type;
 				// numbers
@@ -100,6 +102,16 @@ function populateDateSelectors() {
 				else if (c.tagName === 'INPUT' && type === 'checkbox') {
 					c.checked = Math.random() >= 0.5;
 				}
+
+				c.disabled = false;
+			});
+
+			// dispatch event and enable controls
+			waitabit().then(_ => {
+				controls.forEach(c => {
+					c.dispatchEvent(new Event('change'));
+					c.disabled = true;
+				});
 			});
 		}
 
@@ -177,13 +189,24 @@ function populateEffectiveDates() {
 
 	function generateEffectiveDate(elem) {
 		let dateId = attribute + '-' + elem.getAttribute(attribute).replace(/ /g, '-');
+		let labelText = (function () {
+			if (!elem.hasAttribute('label'))
+				return '';
+			else {
+				let label = elem.getAttribute('label');
+				if (! label || label.length == 0) {
+					return elem.getAttribute(attribute);
+				}
+			}
+		})();
+		let required = !elem.hasAttribute('optional');
 		elem.innerHTML = `
-<label for="" class="control-label col-sm-4 required">Effective Date</label>
+<label for="" class="control-label col-sm-4 ${required ? 'required' : ''}">${labelText ? labelText + ' ' : ''}Effective Date</label>
 <div class="col-sm-8">
 	<label for="${dateId}-date" style="display: inline;"> </label>
-	<input style="display:inline;" class="form-control" type="date" id="${dateId}-date" name="${dateId}-date" data-rule-dateISO="true" placeholder="YYYY-MM-DD" required="required" />
+	<input style="display:inline;" class="form-control" type="date" id="${dateId}-date" name="${dateId}-date" data-rule-dateISO="true" placeholder="YYYY-MM-DD" ${required ? 'required="required"' : ""}/>
 	<label for="${dateId}-time" style="display: inline;"></label>
-	<input style="display:inline;" class="form-control" type="time" id="${dateId}-time" name="${dateId}-time" placeholder="hh:mm:ss"  required="required"/>
+	<input style="display:inline;" class="form-control" type="time" id="${dateId}-time" name="${dateId}-time" placeholder="hh:mm:ss"  ${required ? 'required="required"' : ""}/>
 </div>
 <script>
 	console.log("Loading forms...");
