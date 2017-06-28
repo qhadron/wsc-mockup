@@ -116,7 +116,7 @@
 					<section>
 						You have selected station 02KF015, Graham Creek.
 					</section>
-					<div class="frmvld">
+					<div class="wb-frmvld">
 						<form class="form-horizontal">
 							<h1>File Upload</h1>
 							<script type="text/javascript">
@@ -142,32 +142,39 @@
 											</div>
 										</summary>
 										<div class="form-group">
-											<label class="control-label col-sm-4">Type of Upload</label>
+											<label class="control-label col-sm-4 required">Type of Upload</label>
 											<div class="col-sm-8">
-												<select class="form-control">
-													<option>Option 1</option>
-													<option>Option 2</option>
-													<option>Option 3</option>
-												</select>
+											<select class="form-control">
+<option value="1">Site map (MAP)</option>
+<option value="2">Location map (MAP)</option>
+<option value="3">Site photo (PHOTO)</option>
+<option value="4">Site facilities (PHOTO)</option>
+<option value="5">Control (PHOTO)</option>
+<option value="6">Device condition (PHOTO)</option>
+<option value="7">Site wiring (DIAGRAM)</option>
+<option value="8">Site facilities (DIAGRAM)</option>
+<option value="9">Device (PHOTO)</option>
+<option value="10">Cableway (PHOTO)</option>
+</select>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-sm-4">File to upload</label>
+											<label class="control-label col-sm-4 required">File to upload</label>
 											<div class="col-sm-8">
-												<input type="file" id="file-${index}" class="" style="width:1px; height:1px; z-index:-1; overflow:hidden">
+												<input type="file" id="file-${index}" class="" style="width:1px; height:1px; z-index:-1; overflow:hidden"required=" required">
 												<label for="file-${index}" class="form-control"><span>Choose a file...</span></label>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-sm-4">Picture/File Caption</label>
+											<label class="control-label col-sm-4 required">Picture/File Caption <strong>(Up to 200 characters)</strong></label>
 											<div class="col-sm-8">
-												<input type="text" id="caption-${index}" class="form-control" >
+												<textarea id="caption-${index}" class="form-control" max-length="200" required="required"></textarea>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-sm-4">Owner</label>
+											<label class="control-label col-sm-4 required">Owner</label>
 											<div class="col-sm-8">
-												<input type="text" id="owner-${index}" class="form-control" max="50" maxlength="50" >
+												<input type="text" id="owner-${index}" class="form-control" max="50" maxlength="50" required="required">
 											</div>
 										</div>
 										<div class="form-group" remark="File ${index+1}" remark-label="File">
@@ -186,6 +193,8 @@
 										container.appendChild(elem);
 
 										populateCustomElems();
+										// initialize form validation
+										setTimeout(_ => console.log($(".wb-frmvld").trigger("wb-init.wb-frmvld")), 0);
 
 										return false;
 									};
