@@ -132,8 +132,8 @@
 									<div class="col-sm-8">
 										<select name="data4" id="data4" class="form-control" disabled="disabled">
 											<option value="G">GROUNDWATER</option>
-<option value="H" selected="selected">HYDROMETRIC</option>
-<option value="S">SEDIMENT</option>
+											<option value="H" selected="selected">HYDROMETRIC</option>
+											<option value="S">SEDIMENT</option>
 										</select>
 									</div>
 								</div>
@@ -178,7 +178,7 @@
 									<button class="btn btn-primary pull-right" style="margin-bottom: 1em; margin-top: 1em" id="addrowbutton">Add row</button>
 									<script type="text/javascript">
 										// add row button script
-										window.addEventListener('load', function() {
+										window.addEventListener('load', function () {
 											function addrow() {
 												let tr = document.createElement('tr');
 												tr.innerHTML = `
@@ -238,7 +238,7 @@
 													e.value = 2017;
 												}
 											})
-											document.querySelector('#addrowbutton').onclick = function() {
+											document.querySelector('#addrowbutton').onclick = function () {
 												if (this.textContent === "Add row") {
 													addrow();
 													this.textContent = "Remove";
