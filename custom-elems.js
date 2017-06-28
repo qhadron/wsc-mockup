@@ -6,9 +6,35 @@ function populateDateSelectors() {
 	const newEntryText = 'New Entry';
 
 	function generateSelector(elem) {
-		let containers =
-			elem.hasAttribute('container-selector') ?
-			Array.from(document.querySelectorAll(elem.getAttribute('container-selector'))) : [elem.parentElement];
+		let containers = (function() {
+			let ret = null;
+			let selector = null;
+			let root = null;
+
+			// check tags for info
+			if (elem.hasAttribute('container-selector')) {
+				selector = elem.getAttribute('container-selector');
+			}
+			if (elem.hasAttribute('parent-level')) {
+				let n = Number(elem.getAttribute('parent-level'));
+				root = elem;
+				while (n-- > 0) {
+					root = root.parentElement;
+				}
+			}
+
+			// select containers
+			if (selector) {
+				root = root || document;
+				ret = Array.from(root.querySelectorAll(selector));
+			}
+			else {
+				root = root || elem.parentElement;
+				ret = [root];
+			}
+
+			return ret;
+		})();
 		elem.innerHTML =
 			`
 			<select class="form-control">
@@ -163,7 +189,7 @@ function populateEffectiveDates() {
 	console.log("Loading forms...");
 </script>
 `;
-		$(elem).trigger("wb-init.wb-date");
+		console.log($(elem).find('input[type="date"]').trigger('wb-init.wb-date'));
 	}
 
 	Array.from(document.querySelectorAll(`[${attribute}]`))
