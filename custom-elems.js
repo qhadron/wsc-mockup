@@ -146,7 +146,10 @@ function populateRemarks() {
 	<label for="${remarkId}" class="control-label" style="display: block;"> ` +
 			//	remarkText ? remarkText + ' ' : '' + 
 			`Remark</label>
-	${(elem.hasAttribute('date-selector')) ?
+	${
+//	(elem.hasAttribute('date-selector')) 
+		false
+		?
 		`
 		<select class="form-control" name="${remarkId}-date" id="${remarkId}-date" style="float: right;">
 			<option>2015-07-21</option>
