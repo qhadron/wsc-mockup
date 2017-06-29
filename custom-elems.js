@@ -222,6 +222,14 @@ function populateEffectiveDates() {
 		.forEach(generateEffectiveDate);
 }
 
+function setPageHeader() {
+	Array.from(document.querySelectorAll('[property="name"]'))
+	.forEach( e => {
+		let match = /(\w+) (.*) - .*$/.exec(document.title);
+		e.textContent =	`${match[2]} - ${match[1]}`;
+	});
+}
+
 populateCustomElems = function() {
 	populateRemarks();
 	populateEffectiveDates();
@@ -230,5 +238,6 @@ populateCustomElems = function() {
 
 // generate remark elements
 window.addEventListener('load', function() {
+	setPageHeader();
 	populateCustomElems();
 })
