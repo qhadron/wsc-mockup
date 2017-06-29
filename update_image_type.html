@@ -109,32 +109,30 @@
 				</div>
 			</nav>
 		</header>
-		<div class="container">
-			<div class="row">
-				<main role="main" property="mainContentOfPage" class="col-md-9 col-md-push-3">
-					<h1 id="wb-cont" property="name">HYDEX update information 02KF015</h1>
-					<section>
-						You have selected station 02KF015, Graham Creek.
-					</section>
-					<div class="wb-frmvld">
-						<form class="form-horizontal">
-							<h1>File Upload</h1>
-							<script type="text/javascript">
-								window.addEventListener('load', function() {
-									let container = document.querySelector('.files');
+		<main role="main" property="mainContentOfPage" class="container">
+			<h1 id="wb-cont" property="name">HYDEX update information 99ZZ012</h1>
+			<section>
+				You have selected station 99ZZ012, Graham Creek.
+			</section>
+			<div class="wb-frmvld">
+				<form class="form-horizontal">
+					<h1>File Upload</h1>
+					<script type="text/javascript">
+						window.addEventListener('load', function () {
+							let container = document.querySelector('.files');
 
-									let index = -1;
+							let index = -1;
 
-									function addEntry(e) {
-										if (e) {
-											e.preventDefault();
-											e.stopPropagation();
-										}
-										let elem = document.createElement('details');
-										elem.open = true;
-										index++;
+							function addEntry(e) {
+								if (e) {
+									e.preventDefault();
+									e.stopPropagation();
+								}
+								let elem = document.createElement('details');
+								elem.open = true;
+								index++;
 
-										elem.innerHTML = `
+								elem.innerHTML = `
 										<summary>
 											<h2>File to upload <span id="summary-filename-${index}"></span></h2>
 											<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
@@ -180,44 +178,39 @@
 										<div class="form-group" remark="File ${index+1}" remark-label="File">
 										</div>
 										`;
-										let fileinput = elem.querySelector(`#file-${index}`);
-										let filelabel = fileinput.nextElementSibling;
-										let summary = elem.querySelector(`#summary-filename-${index}`);
-										fileinput.addEventListener('change',
-											function() {
-												let filename = this.value.split('\\').pop();
-												filelabel.firstElementChild.textContent = filename;
-												summary.textContent = `- ${filename}`;
-											});
+								let fileinput = elem.querySelector(`#file-${index}`);
+								let filelabel = fileinput.nextElementSibling;
+								let summary = elem.querySelector(`#summary-filename-${index}`);
+								fileinput.addEventListener('change',
+									function () {
+										let filename = this.value.split('\\').pop();
+										filelabel.firstElementChild.textContent = filename;
+										summary.textContent = `- ${filename}`;
+									});
 
-										container.appendChild(elem);
+								container.appendChild(elem);
 
-										populateCustomElems();
-										// initialize form validation
-										setTimeout(_ => console.log($(".wb-frmvld").trigger("wb-init.wb-frmvld")), 0);
+								populateCustomElems();
+								// initialize form validation
+								setTimeout(_ => console.log($(".wb-frmvld").trigger("wb-init.wb-frmvld")), 0);
 
-										return false;
-									};
+								return false;
+							};
 
-									Array.from(document.querySelectorAll('button.add-entry'))
-										.forEach(elem => {
-											elem.onclick = addEntry;
-											elem.click();
-										});
+							Array.from(document.querySelectorAll('button.add-entry'))
+								.forEach(elem => {
+									elem.onclick = addEntry;
+									elem.click();
 								});
-							</script>
-							<div class="files"></div>
-							<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add File</button>
-							<hr style="clear: right;">
-							<div class="form-group" data-ajax-replace="ajax/submit-button.html">
-							</div>
-						</form>
+						});
+					</script>
+					<div class="files"></div>
+					<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add File</button>
+					<hr style="clear: right;">
+					<div class="form-group" data-ajax-replace="ajax/submit-button.html">
 					</div>
-				</main>
-				<nav role="navigation" id="wb-sec" typeof="SiteNavigationElement" class="col-md-3 col-md-pull-9 visible-md visible-lg" data-ajax-replace="ajax/update-nav-bar.html">
-				</nav>
+				</form>
 			</div>
-		</div>
 
 
 		</main>

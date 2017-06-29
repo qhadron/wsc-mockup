@@ -109,16 +109,14 @@
 				</div>
 			</nav>
 		</header>
-		<div class="container">
-			<div class="row">
-				<main role="main" property="mainContentOfPage" class="col-md-9 col-md-push-3">
-					<h1 id="wb-cont" property="name">HYDEX update information 02KF015</h1>
-					<section>
-						You have selected station 02KF015, Graham Creek.
-					</section>
-					<div class="wb-frmvld">
-						<form class="form-horizontal">
-							<template id="use-template">
+		<main role="main" property="mainContentOfPage" class="container">
+			<h1 id="wb-cont" property="name">HYDEX update information 99ZZ012</h1>
+			<section>
+				You have selected station 99ZZ012, Graham Creek.
+			</section>
+			<div class="wb-frmvld">
+				<form class="form-horizontal">
+					<template id="use-template">
 							<details open="open">
 								<summary>
 									<h2>Station Use</h2>
@@ -193,67 +191,56 @@
 								<div class="form-group remark" remark remark-label></div>
 							</details>
 						</template>
-							<div class="uses"></div>
-							<script type="text/javascript">
-								let container = document.querySelector('.uses');
-								let template = document.getElementById('use-template');
-								let remark = template.content.querySelector('.remark');
-								let count = 0;
+					<div class="uses"></div>
+					<script type="text/javascript">
+						let container = document.querySelector('.uses');
+						let template = document.getElementById('use-template');
+						let remark = template.content.querySelector('.remark');
+						let count = 0;
 
-								function addUse() {
-									let index = count++;
+						function addUse() {
+							let index = count++;
 
-									remark.setAttribute('remark', `Use-${index}`);
-									remark.setAttribute('remark-label', `Use`);
-									let clone = document.importNode(template.content, true);
-									if (index == 0) {
-										let select = clone.querySelector('select.use-select');
-										select.firstElementChild.remove();
-										let summary = clone.querySelector('summary');
-										summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
-										let remark = clone.querySelector('.remark');
-									}
-									container.appendChild(clone);
+							remark.setAttribute('remark', `Use-${index}`);
+							remark.setAttribute('remark-label', `Use`);
+							let clone = document.importNode(template.content, true);
+							if (index == 0) {
+								let select = clone.querySelector('select.use-select');
+								select.firstElementChild.remove();
+								let summary = clone.querySelector('summary');
+								summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
+								let remark = clone.querySelector('.remark');
+							}
+							container.appendChild(clone);
 
-									populateCustomElems();
-								}
+							populateCustomElems();
+						}
 
-								window.addEventListener('load', function () {
-									Array.from(document.querySelectorAll('.adduse'))
-										.forEach(elem => {
-											elem.addEventListener('click', e => {
-												e.preventDefault();
-												e.stopPropagation();
-												addUse();
-												return false;
-											});
-											elem.click();
-										});
+						window.addEventListener('load', function () {
+							Array.from(document.querySelectorAll('.adduse'))
+								.forEach(elem => {
+									elem.addEventListener('click', e => {
+										e.preventDefault();
+										e.stopPropagation();
+										addUse();
+										return false;
+									});
+									elem.click();
 								});
-							</script>
-							<div class="form-group">
-								<button class="btn btn-primary pull-right adduse">Add use</button>
-							</div>
-
-							<div class="form-group" data-ajax-replace="ajax/submit-button.html"></div>
-						</form>
+						});
+					</script>
+					<div class="form-group">
+						<button class="btn btn-primary pull-right adduse">Add use</button>
 					</div>
-					<dl id="wb-dtmd">
-						<dt>Date modified:&#32;</dt>
-						<dd><time property="dateModified">2014-02-19</time></dd>
-					</dl>
-					</form>
-				</main>
-				<nav role="navigation" id="wb-sec" typeof="SiteNavigationElement" class="col-md-3 col-md-pull-9 visible-md visible-lg" data-ajax-replace="ajax/update-nav-bar.html">
-				</nav>
+
+					<div class="form-group" data-ajax-replace="ajax/submit-button.html"></div>
+				</form>
 			</div>
-		</div>
 
-
-		<dl id="wb-dtmd">
-			<dt>Date modified:&#32;</dt>
-			<dd><time property="dateModified">2017-06-16</time></dd>
-		</dl>
+			<dl id="wb-dtmd">
+				<dt>Date modified:&#32;</dt>
+				<dd><time property="dateModified">2017-06-16</time></dd>
+			</dl>
 		</main>
 		<footer role="contentinfo" id="wb-info" class="visible-sm visible-md visible-lg wb-navcurr">
 			<div class="container">
