@@ -1,10 +1,21 @@
-function randInt(range, start) {
+randInt = function (range, start) {
 	return Math.floor(Math.random() * range) + (start || 0);
 }
 
-function waitabit(time, ...args) {
+waitabit = function (time, ...args) {
 	return new Promise(resolve => setTimeout(resolve, time, ...args));
 }
+
+loadPageAsTemplate = function (url) {
+	let req = new XMLHttpRequest();
+	req.open('GET', url, false);
+	req.send(null);
+	let temp = document.createElement('template');
+	temp.innerHTML = req.responseText;
+	return temp;
+}
+
+flatten = (acc, arr) => arr ? acc.concat(arr) : (acc ? acc : []);
 
 function populateDateSelectors() {
 	const newEntryText = 'New Entry';
@@ -59,7 +70,7 @@ function populateDateSelectors() {
 			// get list of controls
 			let controls =
 				containers.map(c => Array.from(c.querySelectorAll('input, select, textarea, button, div.btn')))
-				.reduce((acc, arr) => arr ? acc.concat(arr) : acc, [])
+				.reduce(flatten)
 				.filter(x => x != select); // make sure we don't disable ourselves
 			return controls;
 		}
@@ -138,6 +149,19 @@ function populateDateSelectors() {
 }
 
 function populateRemarks() {
+	let onchange = function () {
+		let ta = document.getElementById(remarkId);
+		let option = select.value;
+		if (option !== "New Remark") {
+			ta.value = `Sample remark on ${option}`;
+			ta.disabled = true;
+		}
+		else {
+			ta.value = "";
+			ta.disabled = false;
+		}
+	};
+
 	function generateRemarks(elem) {
 		let remarkName = elem.getAttribute('remark');
 		let remarkId = 'remark' + '-' + remarkName.replace(/ /g, '-');
@@ -167,20 +191,10 @@ function populateRemarks() {
 `;
 		if (elem.hasAttribute('date-selector')) {
 			let select = elem.querySelector('select');
-			let onchange = function() {
-				let ta = document.getElementById(remarkId);
-				let option = select.value;
-				if (option !== "New Remark") {
-					ta.value = `Sample remark on ${option}`;
-					ta.disabled = true;
-				}
-				else {
-					ta.value = "";
-					ta.disabled = false;
-				}
-			};
-			select.addEventListener('change', onchange);
-			onchange();
+			if (select) {
+				select.addEventListener('change', onchange);
+				onchange();
+			}
 		}
 	}
 
@@ -213,17 +227,44 @@ function populateEffectiveDates() {
 	<label for="${dateId}-time" style="display: inline;"></label>
 	<input style="display:inline;" class="form-control" type="time" id="${dateId}-time" name="${dateId}-time" placeholder="hh:mm:ss"  ${required ? 'required="required"' : ""}/>
 </div>
-<script>
-	console.log("Loading forms...");
-</script>
 `;
-		console.log($(elem).find('input[type="date"]').trigger('wb-init.wb-date'));
+		//console.log(
+			$(elem).find('input[type="date"]').trigger('wb-init.wb-date')
+		//);
 	}
 
 	Array.from(document.querySelectorAll(`[${attribute}]`))
 		.filter(elem => elem.childElementCount === 0)
 		.forEach(generateEffectiveDate);
 }
+
+function populateHistoryTabs () {
+	
+	function generateTab(elem) {
+		// init variables
+		let template = this.template || (this.template=loadPageAsTemplate('ajax/templates/history-tab.html'));
+		let slots = this.slots || (this.slots = Array.from(template.content.querySelectorAll('child-content') || []));
+		this.first = typeof this.first == "undefined" ? true : false;
+		
+		slots.forEach(s => (s.innerHTML = elem.innerHTML));
+		let clone = document.importNode(template.content, true);
+		let arr = Array.from(clone.children);
+		elem.parentElement.replaceChild(clone, elem);
+		return arr;
+	}
+	
+	Array.from(document.querySelectorAll('history-tab, template[history-tab]'))
+	// generates tab and returns the children
+	.map(generateTab)
+	// flatten to single array
+	.reduce(flatten, [])
+	// populate custom elements
+	// .map(e => populateCustomElems() || e) // not needed since the other things get populated after we finish generating
+	// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
+	.map(e => 
+		waitabit(this.first ? 1000 : 0).then(_ => $(e).trigger('wb-init.wb-tabs'))
+	);
+};
 
 function setPageHeader() {
 	Array.from(document.querySelectorAll('[property="name"]'))
@@ -234,6 +275,7 @@ function setPageHeader() {
 }
 
 populateCustomElems = function() {
+	populateHistoryTabs(); // this should be done first
 	populateRemarks();
 	populateEffectiveDates();
 //	populateDateSelectors();
@@ -242,5 +284,5 @@ populateCustomElems = function() {
 // generate remark elements
 window.addEventListener('load', function() {
 	setPageHeader();
-	populateCustomElems();
+	$(document).on('wb-ready.wb', populateCustomElems);
 })
