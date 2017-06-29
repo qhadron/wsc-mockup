@@ -10,7 +10,7 @@ function populateDateSelectors() {
 	const newEntryText = 'New Entry';
 
 	function generateSelector(elem) {
-		let containers = (function() {
+		let containers = (function () {
 			let ret = null;
 			let selector = null;
 			let root = null;
@@ -55,7 +55,7 @@ function populateDateSelectors() {
 
 		let select = elem.firstElementChild;
 
-		let getControls = function() {
+		let getControls = function () {
 			// get list of controls
 			let controls =
 				containers.map(c => Array.from(c.querySelectorAll('input, select, textarea, button, div.btn')))
@@ -67,7 +67,7 @@ function populateDateSelectors() {
 		// sample data regex
 		const regex = /Sample input on \d+-\d+-\d+/;
 
-		let showOldData = function(date) {
+		let showOldData = function (date) {
 			let controls = getControls();
 
 			// populate with default data for controls
@@ -115,7 +115,7 @@ function populateDateSelectors() {
 			});
 		}
 
-		let onchange = function(e) {
+		let onchange = function (e) {
 			let val = select.value;
 			if (val === newEntryText) {
 				let controls = getControls();
@@ -141,9 +141,11 @@ function populateRemarks() {
 	function generateRemarks(elem) {
 		let remarkName = elem.getAttribute('remark');
 		let remarkId = 'remark' + '-' + remarkName.replace(/ /g, '-');
-		let remarkText = elem.getAttribute('remark-label') || remarkName;
+		let remarkText = elem.getAttribute('remark-label');
 		elem.innerHTML = `<div class="col-sm-4" style="text-align: right;">
-	<label for="${remarkId}" class="control-label" style="display: block;">${remarkText} Remark</label>
+	<label for="${remarkId}" class="control-label" style="display: block;"> ` +
+			//	remarkText ? remarkText + ' ' : '' + 
+			`Remark</label>
 	${(elem.hasAttribute('date-selector')) ?
 		`
 		<select class="form-control" name="${remarkId}-date" id="${remarkId}-date" style="float: right;">
@@ -223,7 +225,7 @@ function populateEffectiveDates() {
 populateCustomElems = function() {
 	populateRemarks();
 	populateEffectiveDates();
-	populateDateSelectors();
+//	populateDateSelectors();
 };
 
 // generate remark elements
