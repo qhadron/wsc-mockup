@@ -117,10 +117,11 @@
 			<div class="wb-frmvld">
 				<form class="form-horizontal">
 					<template id="use-template">
-							<details open="open">
-								<summary>
-									<h2>Station Use</h2>
-								</summary>
+						<details open="open">
+							<summary>
+								<h2>Station Use</h2>
+							</summary>
+							<history-tab>
 								<div class="form-group">
 									<label for="data1" class="col-sm-4 control-label required">Use</label>
 									<div class="col-sm-8">
@@ -189,8 +190,9 @@
 									</div>
 								</div>
 								<div class="form-group remark" remark remark-label></div>
-							</details>
-						</template>
+							</history-tab>
+						</details>
+					</template>
 					<div class="uses"></div>
 					<script type="text/javascript">
 						let container = document.querySelector('.uses');
@@ -222,7 +224,7 @@
 									elem.addEventListener('click', e => {
 										e.preventDefault();
 										e.stopPropagation();
-										addUse();
+										waitabit().then(addUse);
 										return false;
 									});
 									elem.click();

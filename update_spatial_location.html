@@ -119,10 +119,11 @@
 					<summary>
 						<h2>Spatial Location</h2>
 					</summary>
-					<div class="form-group">
-						<label for="data4" class="col-sm-4 control-label required">Province</label>
-						<div class="col-sm-8">
-							<select name="data4" id="data4" class="form-control">
+					<history-tab>
+						<div class="form-group">
+							<label for="data4" class="col-sm-4 control-label required">Province</label>
+							<div class="col-sm-8">
+								<select name="data4" id="data4" class="form-control">
 <option value="AB ">ALBERTA (AB)</option>
 <option value="BC ">BRITISH COLUMBIA (BC)</option>
 <option value="MB ">MANITOBA (MB)</option>
@@ -157,13 +158,12 @@
 <option value="VT ">VERMONT (QC)</option>
 <option value="WA ">WASHINGTON (BC)</option>
 <option value="WI ">WISCONSIN (ON)</option>							</select>
+							</div>
 						</div>
-					</div>
 
-					<hr>
+						<hr>
 
-					<script type="text/javascript">
-						window.addEventListener('load', function () {
+						<script type="text/javascript">
 							Array.from(document.querySelectorAll('.degree-input-group'))
 								.forEach(function (group) {
 									let l = group.querySelector(".longform");
@@ -228,50 +228,49 @@
 									m.addEventListener("blur", onShortChange);
 									s.addEventListener("blur", onShortChange);
 								});
-						});
-					</script>
-					<style type="text/css">
-						.degree-input-group .deg,
-						.degree-input-group .min {
-							width: 2em;
-						}
-						
-						.degree-input-group .sec {
-							width: 3em;
-						}
-					</style>
-					<div class="form-group degree-input-group">
-						<label class="control-label col-sm-4 required">Latitude <span>(ddd.ddddd)</span></label>
-						<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
-						<label class="control-label"><span>(ddmmss.s)</span></label>
-						<input type="text" class="deg" maxlength="3">
-						<input type="text" class="min" maxlength="2">
-						<input type="text" class="sec" maxlength="4">
-					</div>
-					<div class="form-group degree-input-group">
-						<label class="control-label col-sm-4 required">Longitude <span>(ddd.ddddd)</span></label>
-						<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
-						<label class="control-label"><span>(ddmmss.s)</span></label>
-						<input type="text" class="deg" maxlength="3">
-						<input type="text" class="min" maxlength="2">
-						<input type="text" class="sec" maxlength="4">
-					</div>
+						</script>
+						<style type="text/css">
+							.degree-input-group .deg,
+							.degree-input-group .min {
+								width: 2em;
+							}
+							
+							.degree-input-group .sec {
+								width: 3em;
+							}
+						</style>
+						<div class="form-group degree-input-group">
+							<label class="control-label col-sm-4 required">Latitude <span>(ddd.ddddd)</span></label>
+							<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
+							<label class="control-label"><span>(ddmmss.s)</span></label>
+							<input type="text" class="deg" maxlength="3">
+							<input type="text" class="min" maxlength="2">
+							<input type="text" class="sec" maxlength="4">
+						</div>
+						<div class="form-group degree-input-group">
+							<label class="control-label col-sm-4 required">Longitude <span>(ddd.ddddd)</span></label>
+							<input type="text" class="longform" value="0.00000" size="9" maxlength="9">
+							<label class="control-label"><span>(ddmmss.s)</span></label>
+							<input type="text" class="deg" maxlength="3">
+							<input type="text" class="min" maxlength="2">
+							<input type="text" class="sec" maxlength="4">
+						</div>
 
-					<hr>
+						<hr>
 
-					<div class="form-group">
-						<label for="data4" class="col-sm-4 control-label">Horizontal Datum</label>
-						<div class="col-sm-8">
-							<select name="data4" id="data4" class="form-control">
+						<div class="form-group">
+							<label for="data4" class="col-sm-4 control-label">Horizontal Datum</label>
+							<div class="col-sm-8">
+								<select name="data4" id="data4" class="form-control">
 <option value="01">NORTH AMERICAN DATUM 1927</option>
 <option value="02">NORTH AMERICAN DATUM 1983</option>
 <option value="03">WORLD GEODETIC SYSTEM 1984</option>
 									</select></div>
-					</div>
-					<div class="form-group">
-						<label for="data4" class="col-sm-4 control-label">Location source</label>
-						<div class="col-sm-8">
-							<select name="data4" id="data4" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="data4" class="col-sm-4 control-label">Location source</label>
+							<div class="col-sm-8">
+								<select name="data4" id="data4" class="form-control">
 <option value="01">GLOBAL POSITIONING SYSTEM - STANDARD</option>
 <option value="02">GLOBAL POSITIONING SYSTEM - DIFFERENTIAL</option>
 <option value="03">GLOBAL POSITIONING SYSTEM - WAAS</option>
@@ -282,12 +281,12 @@
 <option value="08">PAPER MAP - NTS</option>
 <option value="09">PAPER MAP - OTHER</option>
 </select>
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="data4" class="col-sm-4 control-label">Time Zone</label>
-						<div class="col-sm-8">
-							<select name="data4" id="data4" class="form-control">
+						<div class="form-group">
+							<label for="data4" class="col-sm-4 control-label">Time Zone</label>
+							<div class="col-sm-8">
+								<select name="data4" id="data4" class="form-control">
 <option value="1">MST</option>
 <option value="2">CST</option>
 <option value="3">EST</option>
@@ -297,16 +296,14 @@
 <option value="7">AKST</option>
 <option value="8">PST</option>
 </select>
+							</div>
 						</div>
-					</div>
 
-					<hr>
-					<div class="form-group" remark="Location">
-					</div>
+						<hr>
+						<div class="form-group" effective-date="Location"> </div>
+						<div class="form-group" remark="Location"> </div>
 
-					<div class="form-group" effective-date="Location">
-					</div>
-
+					</history-tab>
 				</details>
 				<div class="form-group" data-ajax-replace="ajax/submit-button.html">
 				</div>
