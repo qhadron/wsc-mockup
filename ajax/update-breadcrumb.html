@@ -1,16 +1,47 @@
 <h2>You are here:</h2>
 <div class="container">
-    <div class="row">
-        <ol class="breadcrumb">
-            <li>
-                <a href="index.html">HYDEX</a>
-            </li>
-            <li>
-                <a href="station_search_results.html">Search results</a>
-            </li>
-            <li>
-                Update HYDEX
-            </li>
-        </ol>
-    </div>
+	<div class="row">
+		<ol class="breadcrumb">
+			<li>
+				<a href="index.html">HYDEX Home</a>
+			</li>
+			<li>
+				<a href="station_search_results.html">Search results</a>
+			</li>
+			<li>
+				<a class="expand-dropdown" href="#">HYDEX Update</a>
+			</li>
+		</ol>
+	</div>
+	<template id="template-bc">
+		<li class="section-title">
+		</li>
+	</template>
 </div>
+<script type="application/javascript">
+	let template = document.getElementById('template-bc');
+	const match = /(\w+) (.*) - .*$/.exec(document.title);
+
+	let onclick = e => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		for (let dropdown of document.querySelectorAll('[href="#updates"]')) {
+			console.log(dropdown);
+			dropdown.click();
+		}
+
+	};
+
+	for (let title of template.content.querySelectorAll('.section-title')) {
+		title.textContent = match[2];
+	}
+
+
+	for (let bc of document.querySelectorAll('.breadcrumb')) {
+		bc.appendChild(template.content.cloneNode(true));
+		for (let btn of bc.querySelectorAll('.expand-dropdown')) {
+			let ret = btn.addEventListener('click', onclick);
+		}
+	}
+</script>
