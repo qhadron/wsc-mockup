@@ -238,11 +238,11 @@ function populateEffectiveDates() {
 		.forEach(generateEffectiveDate);
 }
 
-function populateHistoryTabs () {
+let populateHistoryTabs  = (function () {
 	
 	function generateTab(elem) {
 		// init variables
-		let template = this.template || (this.template=loadPageAsTemplate('ajax/templates/history-tab.html'));
+		let template = this.history_template || (this.history_template=loadPageAsTemplate('ajax/templates/history-tab.html'));
 		let slots = this.slots || (this.slots = Array.from(template.content.querySelectorAll('child-content') || []));
 		this.first = typeof this.first == "undefined" ? true : false;
 		
@@ -264,15 +264,19 @@ function populateHistoryTabs () {
 	.map(e => 
 		waitabit(this.first ? 1000 : 0).then(_ => $(e).trigger('wb-init.wb-tabs'))
 	);
-};
+}).bind({});
 
-function setPageHeader() {
+
+let setPageHeader = (function () {
+	const template = this.template || (this.template=loadPageAsTemplate('ajax/templates/update-page-header.html'));
+	const title = this.title || (this.title = template.content.querySelector('h1'));
 	Array.from(document.querySelectorAll('[property="name"]'))
 	.forEach( e => {
-		let match = /(\w+) (.*) - .*$/.exec(document.title);
-		e.textContent =	`${match[2]} - ${match[1]}`;
+		const match = /(\w+) (.*) - .*$/.exec(document.title);
+		title.textContent = `${match[2]}`;
+		e.parentElement.replaceChild(template.content.cloneNode(true), e);
 	});
-}
+}).bind({});
 
 populateCustomElems = function() {
 	populateHistoryTabs(); // this should be done first
