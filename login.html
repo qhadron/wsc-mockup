@@ -33,6 +33,18 @@
 		<noscript><link rel="stylesheet" href="./wet-boew/css/noscript.min.css" /></noscript>
 	</head>
 
+	<script type="text/javascript">
+		const url = new URL(window.location.href);
+		// if logged in, auto redirect
+		if (sessionStorage.getItem('loggedin')) {
+			let target = 'login_landing_page.html';
+			if (param = url.searchParams.get('redirect')) {
+				target = param;
+			}
+			window.location = target;
+		}
+	</script>
+
 	<body vocab="http://schema.org/" typeof="WebPage">
 		<ul id="wb-tphp">
 			<li class="wb-slc">
@@ -109,7 +121,7 @@
 			<!-- Page content -->
 			<p id="greeting"></p>
 
-			<form action="station_search.html" class="mrgn-bttm-md">
+			<form action="login_landing_page.html" class="mrgn-bttm-md">
 				<div class="row mrgn-bttm-md">
 					<div class="col-lg-2">
 						<label for="username">Username:</label>
@@ -130,17 +142,6 @@
 					<div class="col-lg-2"></div>
 					<div class="col-lg-10">
 						<button class="btn btn-primary" id="login-button">Login</button>
-						<script type="text/javascript">
-							const url = new URL(window.location.href);
-							// if logged in, auto redirect
-							if (sessionStorage.getItem('loggedin')) {
-								let target = document.querySelector('main form').getAttribute('action');
-								if (param = url.searchParams.get('redirect')) {
-									target = param;
-								}
-								window.location = target;
-							}
-						</script>
 						<script type="text/javascript">
 							window.addEventListener('load', function () {
 								const button = document.getElementById('login-button');
