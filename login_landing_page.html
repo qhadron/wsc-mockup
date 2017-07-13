@@ -8,7 +8,7 @@
 		<meta charset="utf-8">
 		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
 		wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-		<title>Station Search Results - HYDEX Update
+		<title>HYDEX Update
 		</title>
 		<meta content="width=device-width,initial-scale=1" name="viewport">
 		<!-- Meta data -->
@@ -51,12 +51,6 @@
 					<div class="container">
 						<div class="row">
 							<object id="gcwu-sig" type="image/svg+xml" tabindex="-1" role="img" data="./theme-gc-intranet/assets/sig-blk-en.svg" aria-label="Government of Canada"></object>
-							<section id="wb-lng">
-								<h2>Language selection</h2>
-								<ul class="list-inline">
-									<li><a lang="fr" href="content-secmenu-fr.html">Français</a></li>
-								</ul>
-							</section>
 							<section class="wb-mb-links col-xs-12 visible-sm visible-xs" id="wb-glb-mn">
 								<h2>Search and menus</h2>
 								<ul class="pnl-btn list-inline text-right">
@@ -70,12 +64,11 @@
 				<div class="container">
 					<div class="row">
 						<div id="wb-sttl" class="col-md-12">
-							<a href="http://wet-boew.github.io/v4.0-ci/index-en.html">
+							<a href="#unimplemented">
 								<span>Water Survey of Canada HYDEX data update</span>
 							</a>
 							<object id="wmms" type="image/svg+xml" tabindex="-1" role="img" data="./theme-gc-intranet/assets/wmms-intra.svg" aria-label="Symbol of the Government of Canada"></object>
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -84,9 +77,9 @@
 					<h2>Topics menu</h2>
 					<div class="row">
 						<ul class="list-inline menu">
-							<li><a href="./index-en.html">HYDEX Reports</a></li>
-							<li><a href="./docs/start-en.html#implement">HYDEX  update</a></li>
-							<li><a href="./docs/start-en.html">HYDEX Administration</a></li>
+							<li><a href="reports.html">HYDEX Reports</a></li>
+							<li><a href="login.html">HYDEX  update</a></li>
+							<li><a href="#unimplemented">HYDEX Administration</a></li>
 						</ul>
 					</div>
 				</div>
@@ -97,13 +90,7 @@
 					<div class="row">
 						<ol class="breadcrumb">
 							<li>
-								<a href="index.html">HYDEX Home</a>
-							</li>
-							<li>
-								<a href="station_search.html">Station Search</a>
-							</li>
-							<li>
-								Search results
+								HYDEX Home
 							</li>
 						</ol>
 					</div>
@@ -112,46 +99,43 @@
 		</header>
 		<div data-ajax-replace="ajax/login-info.html"></div>
 		<main role="main" property="mainContentOfPage" class="container">
-			<h1 id="wb-cont" property="name">HYDEX Update Search Results</h1>
-			<h2>Select station to edit</h2>
+			<h1 id="wb-cont" property="name">HYDEX - Logged in</h1>
 
-			<form>
+			<section>
+				<a href="station_search.html">
+					<h2>HYDEX Update</h2>
+				</a>
+				Update station and office information to add or modify:
+				<ul>
+					<li>devices,</li>
+					<li>staff,</li>
+					<li>cost arrangements for stations,</li>
+					<li>and much more.</li>
+				</ul>
+			</section>
 
-				<table class="wb-tables table table-striped" data-ajax-replace="ajax/station-list-body.html">
-				</table>
-				<dl id="wb-dtmd">
-					<dt>Date modified:&#32;</dt>
-					<dd><time property="dateModified">2017-06-16</time></dd>
-				</dl>
-			</form>
-			<button class="btn btn-normal" onclick="document.location.href='station_search.html'">Back</button>
+			<section>
+				<h2><a href="#unimplemented">HYDEX Administration</a></h2>
+				Admininistrative functions include:
+				<ul>
+					<li> updating valid devices,</li>
+					<li> changing agency names,</li>
+					<li> modifying <u>types</u> of programs, and</li>
+					<li> <u>types</u> of cost arrangements.
+				</ul>
+			</section>
+
+			<section>
+				<h2><a href="#unimplemented">HYDEX Reports</a></h2>
+				Run reports on unqiue stations or answer questions on the network by downloading data.
+			</section>
+
+			<dl id="wb-dtmd">
+				<dt>Date modified:&#32;</dt>
+				<dd><time property="dateModified">2017-06-16</time></dd>
+			</dl>
 		</main>
-		<footer role="contentinfo" id="wb-info" class="visible-sm visible-md visible-lg wb-navcurr">
-			<div class="container">
-				<nav role="navigation" class="row">
-					<h2>About this site</h2>
-					<section class="col-sm-3">
-						<h3>Contact us</h3>
-						<ul class="list-unstyled">
-							<li><a href="https://watersurveyofcanada.atlassian.net/servicedesk/customer/portal/2">Questions or comments?</a></li>
-						</ul>
-					</section>
-					<section class="col-sm-3">
-						<h3>About</h3>
-						<ul class="list-unstyled">
-							<li><a href="">HYDEX user documentation in ecollab</a></li>
-							<li><a href="">HYDEX requirements document in ecollab</a></li>
-						</ul>
-					</section>
-					<section class="col-sm-3">
-						<h3>Public Sites</h3>
-						<ul class="list-unstyled">
-							<li><a href="https://www.ec.gc.ca/rhc-wsc/">Water Survey of Canada</a></li>
-						</ul>
-					</section>
-
-				</nav>
-			</div>
+		<footer role="contentinfo" id="wb-info" class="visible-sm visible-md visible-lg wb-navcurr" data-ajax-replace="ajax/footer.html">
 		</footer>
 		<!--[if gte IE 9 | !IE ]><!-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
