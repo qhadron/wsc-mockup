@@ -244,7 +244,6 @@ let populateHistoryTabs  = (function () {
 		// init variables
 		let template = this.history_template || (this.history_template=loadPageAsTemplate('ajax/templates/history-tab.html'));
 		let slots = this.slots || (this.slots = Array.from(template.content.querySelectorAll('child-content') || []));
-		this.first = typeof this.first == "undefined" ? true : false;
 		
 		slots.forEach(s => (s.innerHTML = elem.innerHTML));
 		let clone = document.importNode(template.content, true);
@@ -261,9 +260,10 @@ let populateHistoryTabs  = (function () {
 	// populate custom elements
 	// .map(e => populateCustomElems() || e) // not needed since the other things get populated after we finish generating
 	// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
-	.map(e => 
+	.map(e =>  {
+		this.first = typeof this.first == "undefined";
 		waitabit(this.first ? 1000 : 0).then(_ => $(e).trigger('wb-init.wb-tabs'))
-	);
+	});
 }).bind({});
 
 
