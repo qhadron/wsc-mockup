@@ -4,8 +4,21 @@
         <div class="row">
             <div class="col-md-12">
                 <p class="btn">Signed in as <span class="wb-so-uname">John Doe</span></p>
-                <button class="btn btn-primary" type="button" onclick="document.location.href='1_Main_Landing_Page.html'">Sign out</button>
+                <button class="btn btn-primary" type="button" id="signout-button">Sign out</button>
+                <script type="text/javascript">
+                    // if we're showing this we've logged in. remember this
+                    sessionStorage.setItem('loggedin', true);
+
+                    // logging out means removing the flag
+                    const button = document.getElementById('signout-button');
+                    button.addEventListener('click', e => {
+                        sessionStorage.removeItem('loggedin');
+                        window.location = "/index.html";
+                    });
+                </script>
             </div>
         </div>
     </div>
 </section>
+<script type="text/javascript">
+</script>

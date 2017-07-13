@@ -107,6 +107,7 @@
 		<main role="main" property="mainContentOfPage" class="container">
 			<h1 property="name" id="wb-cont">Login to HYDEX</h1>
 			<!-- Page content -->
+			<p id="greeting"></p>
 
 			<form action="station_search.html" class="mrgn-bttm-md">
 				<div class="row mrgn-bttm-md">
@@ -128,7 +129,50 @@
 				<div class="row mrgn-bttm-md">
 					<div class="col-lg-2"></div>
 					<div class="col-lg-10">
-						<button class="btn btn-primary">Login</button>
+						<button class="btn btn-primary" id="login-button">Login</button>
+						<script type="text/javascript">
+							const url = new URL(window.location.href);
+							// if logged in, auto redirect
+							if (sessionStorage.getItem('loggedin')) {
+								let target = document.querySelector('main form').getAttribute('action');
+								if (param = url.searchParams.get('redirect')) {
+									target = param;
+								}
+								window.location = target;
+							}
+						</script>
+						<script type="text/javascript">
+							window.addEventListener('load', function () {
+								const button = document.getElementById('login-button');
+								const greeting = document.getElementById('greeting');
+
+								const url = new URL(window.location.href);
+								// set login purpose
+								let param;
+								if (param = url.searchParams.get('purpose')) {
+									greeting.textContent = `Log in to ${param}.`;
+								}
+
+								// automatically add logged in flag after clicking login button
+								button.addEventListener('click', e => {
+									window.sessionStorage.setItem('loggedin', 'true');
+								})
+
+
+								// get redirect url
+								if (param = url.searchParams.get('redirect')) {
+									button.addEventListener('click', e => {
+										e.preventDefault();
+										e.stopPropagation();
+
+										// redirect to the specified location
+										window.location = new URL(param, window.location.href);
+
+										return false;
+									});
+								}
+							});
+						</script>
 					</div>
 				</div>
 			</form>
