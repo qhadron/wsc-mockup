@@ -186,7 +186,7 @@ function populateRemarks() {
 	}
 </div>
 <div class="col-sm-8">
-	<textarea id="${remarkId}" rows="5" cols="35" name="${remarkId}" class="form-control" maxlength="500"></textarea>
+	<textarea id="${remarkId}" rows="1" cols="60" name="${remarkId}" class="form-control" maxlength="500"></textarea>
 </div>
 `;
 		if (elem.hasAttribute('date-selector')) {
