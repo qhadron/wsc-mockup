@@ -6,13 +6,25 @@ waitabit = function (time, ...args) {
 	return new Promise(resolve => setTimeout(resolve, time, ...args));
 }
 
-loadPageAsTemplate = function (url) {
-	let req = new XMLHttpRequest();
-	req.open('GET', url, false);
-	req.send(null);
-	let temp = document.createElement('template');
-	temp.innerHTML = req.responseText;
-	return temp;
+loadPageAsTemplate = async function (url) {
+	const key = `loadPageAsTemplate:${url}`
+	let responseText;
+	let cached = sessionStorage.getItem(key);
+	if (cached) {
+		console.log(`Loading ${url} from storage...`);
+		responseText = cached;
+	}
+	else {
+		let response = await fetch(url);
+		responseText = await response.text();
+		try {
+			sessionStorage.setItem(key, responseText);
+		}
+		finally {};
+	}
+	let tmpl = document.createElement('template');
+	tmpl.innerHTML = responseText;
+	return tmpl;
 }
 
 flatten = (acc, arr) => arr ? acc.concat(arr) : (acc ? acc : []);
@@ -238,13 +250,11 @@ function populateEffectiveDates() {
 		.forEach(generateEffectiveDate);
 }
 
-let populateHistoryTabs  = (function () {
-	
+let populateHistoryTabs  = ( async function () {
+	const template = await loadPageAsTemplate('ajax/templates/history-tab.html');
+	let slots = Array.from(template.content.querySelectorAll('child-content') || []);
 	function generateTab(elem) {
 		// init variables
-		let template = this.history_template || (this.history_template=loadPageAsTemplate('ajax/templates/history-tab.html'));
-		let slots = this.slots || (this.slots = Array.from(template.content.querySelectorAll('child-content') || []));
-		
 		slots.forEach(s => (s.innerHTML = elem.innerHTML));
 		let clone = document.importNode(template.content, true);
 		let arr = Array.from(clone.children);
@@ -260,30 +270,29 @@ let populateHistoryTabs  = (function () {
 	// populate custom elements
 	// .map(e => populateCustomElems() || e) // not needed since the other things get populated after we finish generating
 	// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
-	.map(e =>  {
+	.map(async e => {
 		this.first = typeof this.first == "undefined";
 		// note: if !this.first this.waiting cannot be changed, so this if statement is required
 		if (this.first) {
 			this.waiting = true;
 		}
-		waitabit( this.waiting ? 1000 : 0 ).then(_ => {
-			$(e).trigger('wb-init.wb-tabs');yy
-			this.waiting=false;
+		let result = await waitabit( this.waiting ? 1000 : 0 );
+		$(e).trigger('wb-init.wb-tabs');
+		this.waiting=false;
+	});
+}).bind({});
+
+
+async function setPageHeader() {
+	const template = await loadPageAsTemplate('ajax/templates/update-page-header.html');
+		const title = template.content.querySelector('h1');
+		Array.from(document.querySelectorAll('[property="name"]'))
+		.forEach( e => {
+			const match = /(\w+) (.*) - .*$/.exec(document.title);
+			title.textContent = `${match[2]}`;
+			e.parentElement.replaceChild(template.content.cloneNode(true), e);
 		});
-	});
-}).bind({});
-
-
-let setPageHeader = (function () {
-	const template = this.template || (this.template=loadPageAsTemplate('ajax/templates/update-page-header.html'));
-	const title = this.title || (this.title = template.content.querySelector('h1'));
-	Array.from(document.querySelectorAll('[property="name"]'))
-	.forEach( e => {
-		const match = /(\w+) (.*) - .*$/.exec(document.title);
-		title.textContent = `${match[2]}`;
-		e.parentElement.replaceChild(template.content.cloneNode(true), e);
-	});
-}).bind({});
+}
 
 populateCustomElems = function() {
 	populateHistoryTabs(); // this should be done first
