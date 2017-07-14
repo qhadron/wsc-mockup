@@ -1,24 +1,26 @@
-<section id="wb-so">
-    <h2 class="wb-inv">Sign-on information</h2>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <p class="btn">Signed in as <span class="wb-so-uname">John Doe</span></p>
-                <button class="btn btn-primary" type="button" id="signout-button">Sign out</button>
-                <script type="text/javascript">
-                    // if we're showing this we've logged in. remember this
-                    sessionStorage.setItem('loggedin', true);
-
-                    // logging out means removing the flag
-                    const button = document.getElementById('signout-button');
-                    button.addEventListener('click', e => {
-                        sessionStorage.removeItem('loggedin');
-                        window.location = "index.html";
-                    });
-                </script>
+<template id="tmpl-login-info">
+    <section id="wb-so">
+        <h2 class="wb-inv">Sign-on information</h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="btn">Signed in as <span class="wb-so-uname">John Doe</span></p>
+                    <button class="btn btn-primary" type="button" id="signout-button">Sign out</button>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</template>
 <script type="text/javascript">
+    if (sessionStorage.getItem('loggedin')) {
+        const template = document.getElementById('tmpl-login-info');
+        // logging out means removing the login flag
+        template.parentElement.appendChild(document.importNode(template.content, true));
+        const button = document.getElementById('signout-button');
+        button.addEventListener('click', e => {
+            console.log("here!");
+            sessionStorage.removeItem('loggedin');
+            window.location = "index.html";
+        });
+    }
 </script>
