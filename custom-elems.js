@@ -6,12 +6,34 @@ waitabit = function (time, ...args) {
 	return new Promise(resolve => setTimeout(resolve, time, ...args));
 }
 
+for (let i = 0; i < sessionStorage.length;) {
+	let key = sessionStorage.key(i);
+	if (/loadPageAsTemplate:/m.test(key)) {
+		sessionStorage.removeItem(key);
+	}
+	else ++i;
+}
+
+getAutosize = function () {
+	return new Promise((resolve, reject) => {
+		if (this.loaded) return resolve();
+		const script = document.createElement('script');
+		script.src = 'static/autosize.js';
+		script.onload = _ => {
+			this.loaded = true;
+			resolve();
+		};
+		document.head.appendChild(script);
+	});
+}.bind({
+	loaded: false
+});
+
 loadPageAsTemplate = async function (url) {
 	const key = `loadPageAsTemplate:${url}`
 	let responseText;
 	let cached = sessionStorage.getItem(key);
 	if (cached) {
-		console.log(`Loading ${url} from storage...`);
 		responseText = cached;
 	}
 	else {
@@ -160,8 +182,9 @@ function populateDateSelectors() {
 		.forEach(generateSelector);
 }
 
-function populateRemarks() {
-	let onchange = function () {
+async function populateRemarks(force) {
+	let loadingAutosize = getAutosize();
+	const onchange = function () {
 		let ta = document.getElementById(remarkId);
 		let option = select.value;
 		if (option !== "New Remark") {
@@ -174,44 +197,56 @@ function populateRemarks() {
 		}
 	};
 
-	function generateRemarks(elem) {
-		let remarkName = elem.getAttribute('remark');
-		let remarkId = 'remark' + '-' + remarkName.replace(/ /g, '-');
-		let remarkText = elem.getAttribute('remark-label');
-		elem.innerHTML = `<div class="col-sm-4" style="text-align: right;">
-	<label for="${remarkId}" class="control-label" style="display: block;"> ` +
-			//	remarkText ? remarkText + ' ' : '' + 
-			`Remark</label>
-	${
-//	(elem.hasAttribute('date-selector')) 
-		false
-		?
-		`
-		<select class="form-control" name="${remarkId}-date" id="${remarkId}-date" style="float: right;">
-			<option>2015-07-21</option>
-			<option>2016-01-24</option>
-			<option>2017-09-23</option>
-			<option selected="selected">2018-08-26</option>
-			<option>New Remark</option>
-		</select>
-		` : ''
-	}
-</div>
-<div class="col-sm-8">
-	<textarea id="${remarkId}" rows="1" cols="60" name="${remarkId}" class="form-control" maxlength="500"></textarea>
-</div>
-`;
-		if (elem.hasAttribute('date-selector')) {
-			let select = elem.querySelector('select');
-			if (select) {
-				select.addEventListener('change', onchange);
-				onchange();
-			}
+	const template = await loadPageAsTemplate('ajax/templates/remark.html');
+	const label = template.content.querySelector('label');
+	const select = template.content.querySelector('select');
+	const ta = template.content.querySelector('textarea');
+
+	async function generateRemarks(elem) {
+		const remarkName = elem.getAttribute('remark');
+		const remarkId = 'remark' + '-' + remarkName.replace(/ /g, '-');
+		const remarkText = elem.getAttribute('remark-label');
+		label.for = remarkId;
+
+		// force rerender
+		if (force) elem.innerHTML = "";
+
+		if (elem.hasAttribute('remark-label')) {
+			label.textContent = `${elem.getAttribute('remark-label')} Remark`;
 		}
+		else {
+			label.textContent = "Remark";
+		}
+
+		if (elem.hasAttribute('date-selector')) {
+			select.name = `${remarkId}-date`;
+			select.id = `${remarkId}-date`;
+		}
+		else {
+			select.remove();
+		}
+
+		ta.id = remarkId;
+		ta.name = remarkId;
+
+		elem.appendChild(document.importNode(template.content, true));
+
+		// the following code operates on the duplicated element
+
+		if (elem.hasAttribute('date-selector')) {
+			const select = elem.querySelector('select');
+			select.addEventListener('change', onchange);
+			onchange();
+		}
+
+		await loadingAutosize;
+		autosize(elem.querySelector('textarea'));
+
 	}
 
+
 	Array.from(document.querySelectorAll('[remark]'))
-		.filter(elem => elem.childElementCount === 0)
+		.filter(elem => force || elem.childElementCount === 0)
 		.forEach(generateRemarks);
 }
 
@@ -225,7 +260,7 @@ function populateEffectiveDates() {
 				return '';
 			else {
 				let label = elem.getAttribute('label');
-				if (! label || label.length == 0) {
+				if (!label || label.length == 0) {
 					return elem.getAttribute(attribute);
 				}
 			}
@@ -241,8 +276,8 @@ function populateEffectiveDates() {
 </div>
 `;
 		//console.log(
-			$(elem).find('input[type="date"]').trigger('wb-init.wb-date')
-		//);
+		$(elem).find('input[type="date"]').trigger('wb-init.wb-date')
+			//);
 	}
 
 	Array.from(document.querySelectorAll(`[${attribute}]`))
@@ -250,9 +285,10 @@ function populateEffectiveDates() {
 		.forEach(generateEffectiveDate);
 }
 
-let populateHistoryTabs  = ( async function () {
+let populateHistoryTabs = (async function () {
 	const template = await loadPageAsTemplate('ajax/templates/history-tab.html');
 	let slots = Array.from(template.content.querySelectorAll('child-content') || []);
+
 	function generateTab(elem) {
 		// init variables
 		slots.forEach(s => (s.innerHTML = elem.innerHTML));
@@ -261,48 +297,49 @@ let populateHistoryTabs  = ( async function () {
 		elem.parentElement.replaceChild(clone, elem);
 		return arr;
 	}
-	
+
 	Array.from(document.querySelectorAll('history-tab, template[history-tab]'))
-	// generates tab and returns the children
-	.map(generateTab)
-	// flatten to single array
-	.reduce(flatten, [])
-	// populate custom elements
-	// .map(e => populateCustomElems() || e) // not needed since the other things get populated after we finish generating
-	// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
-	.map(async e => {
-		this.first = typeof this.first == "undefined";
-		// note: if !this.first this.waiting cannot be changed, so this if statement is required
-		if (this.first) {
-			this.waiting = true;
-		}
-		let result = await waitabit( this.waiting ? 1000 : 0 );
-		$(e).trigger('wb-init.wb-tabs');
-		this.waiting=false;
-	});
+		// generates tab and returns the children
+		.map(generateTab)
+		// flatten to single array
+		.reduce(flatten, [])
+		// populate custom elements
+		// .map(e => populateCustomElems() || e) // not needed since the other things get populated after we finish generating
+		// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
+		.map(async e => {
+			this.first = typeof this.first == "undefined";
+			// note: if !this.first this.waiting cannot be changed, so this if statement is required
+			if (this.first) {
+				this.waiting = true;
+			}
+			let result = await waitabit(this.waiting ? 1000 : 0);
+			$(e).trigger('wb-init.wb-tabs');
+			populateCustomElems(true);
+			this.waiting = false;
+		});
 }).bind({});
 
 
 async function setPageHeader() {
 	const template = await loadPageAsTemplate('ajax/templates/update-page-header.html');
-		const title = template.content.querySelector('h1');
-		Array.from(document.querySelectorAll('[property="name"]'))
-		.forEach( e => {
+	const title = template.content.querySelector('h1');
+	Array.from(document.querySelectorAll('[property="name"]'))
+		.forEach(e => {
 			const match = /(\w+) (.*) - .*$/.exec(document.title);
 			title.textContent = `${match[2]}`;
 			e.parentElement.replaceChild(template.content.cloneNode(true), e);
 		});
 }
 
-populateCustomElems = function() {
-	populateHistoryTabs(); // this should be done first
-	populateRemarks();
-	populateEffectiveDates();
-//	populateDateSelectors();
+populateCustomElems = async function (force) {
+	populateHistoryTabs();
+	populateRemarks(force);
+	populateEffectiveDates(force);
+	//	populateDateSelectors();
 };
 
 // generate remark elements
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
 	setPageHeader();
 	$(document).on('wb-ready.wb', populateCustomElems);
 })
