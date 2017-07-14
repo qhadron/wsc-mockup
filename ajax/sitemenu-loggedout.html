@@ -23,11 +23,19 @@
                     HYDEX Reports 
                 </a>
             </li>
-            <li>
-                <a href="login.html?purpose=perform%20administrative%20tasks&redirect=javascript:alert('Admin is unimplemented')">
-                    HYDEX Administration 
-                </a>
-            </li>
+            <template id="admin-template">
+                <li id="admin-list-item">
+                    <a href="login.html?purpose=perform%20administrative%20tasks&redirect=javascript:window.history.back(),alert('admin is unimplemented');">
+                        HYDEX Administration 
+                    </a>
+                </li>
+            </template>
+            <script>
+                if (sessionStorage.getItem('loggedin')) {
+                    const template = document.getElementById('admin-template');
+                    template.parentElement.appendChild(template.content.cloneNode(true));
+                }
+            </script>
         </ul>
     </div>
 </div>
