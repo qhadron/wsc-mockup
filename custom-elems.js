@@ -262,14 +262,14 @@ let populateHistoryTabs  = (function () {
 	// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
 	.map(e =>  {
 		this.first = typeof this.first == "undefined";
-		if (!this.waiting){
-			console.log("Updating history tab, first is ", this.first);
+		// note: if !this.first this.waiting cannot be changed, so this if statement is required
+		if (this.first) {
 			this.waiting = true;
-			waitabit(this.first ? 1000 : 0).then(_ => {
-				$(e).trigger('wb-init.wb-tabs');
-				this.waiting=false;
-			});
 		}
+		waitabit( this.waiting ? 1000 : 0 ).then(_ => {
+			$(e).trigger('wb-init.wb-tabs');yy
+			this.waiting=false;
+		});
 	});
 }).bind({});
 
