@@ -257,7 +257,7 @@ async function populateRemarks(force) {
 			label.textContent = "Remark";
 		}
 
-		if (elem.hasAttribute('date-selector')) {
+		if (false && elem.hasAttribute('date-selector')) {
 			select.name = `${remarkId}-date`;
 			select.id = `${remarkId}-date`;
 		}
@@ -328,8 +328,8 @@ let populateHistoryTabs = (async function () {
 
 	async function generateTab(elem) {
 		const template = await templatePromise;
-		let slots = this.slots || (this.slots = Array.from(template.content.querySelectorAll('child-content') || []));
-		slots.forEach(s => (s.innerHTML = elem.innerHTML));
+		const slots = Array.from(template.content.querySelectorAll('child-content') || []);
+		slots.forEach(s => s.innerHTML = elem.innerHTML);
 		let clone = document.importNode(template.content, true);
 		let arr = Array.from(clone.children);
 		elem.parentElement.replaceChild(clone, elem);
@@ -351,7 +351,7 @@ let populateHistoryTabs = (async function () {
 		if (this.first) {
 			await waitabit(1000);
 		}
-		$(generatedElems).trigger('wb-init.wb-tabs');
+		generatedElems.forEach(e => $(e).trigger('wb-init.wb-tabs'));
 		populateCustomElems(true);
 	}
 }).bind({});
