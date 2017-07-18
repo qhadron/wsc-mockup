@@ -314,22 +314,21 @@ function populateEffectiveDates() {
 	<input style="display:inline;" class="form-control" type="time" id="${dateId}-time" name="${dateId}-time" placeholder="hh:mm:ss"  ${required ? 'required="required"' : ""}/>
 </div>
 `;
-		//console.log(
-		$(elem).find('input[type="date"]').trigger('wb-init.wb-date')
-			//);
+		return document.getElementById(`${dateId}-date`);
 	}
 
-	Array.from(document.querySelectorAll(`[${attribute}]`))
+	const generatedElems = Array.from(document.querySelectorAll(`[${attribute}]`))
 		.filter(elem => elem.childElementCount === 0)
-		.forEach(generateEffectiveDate);
+		.map(generateEffectiveDate);
+	$(generatedElems).trigger('wb-init.wb-date')
 }
 
 let populateHistoryTabs = (async function () {
-	const template = await loadPageAsTemplate('ajax/templates/history-tab.html');
-	let slots = Array.from(template.content.querySelectorAll('child-content') || []);
+	const templatePromise = this.template || loadPageAsTemplate('ajax/templates/history-tab.html');
 
-	function generateTab(elem) {
-		// init variables
+	async function generateTab(elem) {
+		const template = await templatePromise;
+		let slots = this.slots || (this.slots = Array.from(template.content.querySelectorAll('child-content') || []));
 		slots.forEach(s => (s.innerHTML = elem.innerHTML));
 		let clone = document.importNode(template.content, true);
 		let arr = Array.from(clone.children);
@@ -337,25 +336,24 @@ let populateHistoryTabs = (async function () {
 		return arr;
 	}
 
-	Array.from(document.querySelectorAll('history-tab, template[history-tab]'))
-		// generates tab and returns the children
-		.map(generateTab)
-		// flatten to single array
-		.reduce(flatten, [])
-		// populate custom elements
-		// .map(e => populateCustomElems() || e) // not needed since the other things get populated after we finish generating
-		// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for $ initialization
-		.map(async e => {
-			this.first = typeof this.first == "undefined";
-			// note: if !this.first this.waiting cannot be changed, so this if statement is required
-			if (this.first) {
-				this.waiting = true;
-			}
-			let result = await waitabit(this.waiting ? 1000 : 0);
-			$(e).trigger('wb-init.wb-tabs');
-			populateCustomElems(true);
-			this.waiting = false;
-		});
+	const generatedElems =
+		await Promise.all(
+			Array.from(document.querySelectorAll('history-tab, template[history-tab]'))
+			// generates tab and returns a promise that resolves with the children
+			.map(generateTab)
+			// flatten to single array
+			.reduce(flatten, [])
+		);
+
+	if (generatedElems.length > 0) {
+		this.first = typeof this.first == "undefined";
+		// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for wet initialization
+		if (this.first) {
+			await waitabit(1000);
+		}
+		$(generatedElems).trigger('wb-init.wb-tabs');
+		populateCustomElems(true);
+	}
 }).bind({});
 
 
@@ -380,5 +378,5 @@ populateCustomElems = async function (force) {
 // generate remark elements
 window.addEventListener('load', function () {
 	setPageHeader();
-	$(document).on('wb-ready.wb', populateCustomElems);
+	populateCustomElems();
 })
