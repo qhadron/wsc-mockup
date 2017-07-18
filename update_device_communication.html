@@ -115,11 +115,6 @@
 		</header>
 		<div data-ajax-replace="ajax/login-info.html"></div>
 		<main role="main" property="mainContentOfPage" class="container">
-			<section class="alert alert-danger">
-				<p>
-					This section is still work in progress. Click <a href="#" class="alert-link" onclick="window.history.back()">here</a> to go back to the last page.
-				</p>
-			</section>
 			<h1 id="wb-cont" property="name">HYDEX update information 99ZZ204</h1>
 			<section>
 				<div data-ajax-replace="ajax/update-header.html"></div>
@@ -129,6 +124,9 @@
 				<details open="open">
 					<summary>
 						<h2 class="device-title">Device Life Cycle Management</h2>
+						<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
+							<span class="glyphicon glyphicon-trash"></span>
+						</div>
 					</summary>
 
 					<div class="panel panel-default info-panel">
@@ -247,82 +245,168 @@
 							<h6 class="panel-title">Status</h6>
 						</header>
 						<div class="panel-body">
-							Status!
+							<div class="form-group">
+								<label class="col-sm-4 control-label required">Status</label>
+								<div class="col-sm-8">
+									<select class="form-control device-status-select" style="display: inline;">
+										<option selected>ACTIVE</option>
+										<option>INACTIVE</option>
+										<option>REMOVED</option>
+									</select>
+									<button class="btn-toggle btn btn-default invisible form-control">
+										Move Device
+									</button>
+								</div>
+							</div>
+							<div class="form-group">
+									<label class="col-sm-4 control-label required">Deployment Status</label>
+								<div class="col-sm-8">
+									<select class="form-control deployment-status-select">
+										<option class="other-option">DEPLOYED</option>
+										<option class="removed-option" style="display: none;">DEPLOYABLE</option>
+										<option class="removed-option" style="display: none;">NON-DEPLOYABLE</option>
+									</select>
+								</div>
+							</div>
+							<div class="station-move-container well hidden">
+								<div class="form-group">
+									<label for="station_id" class="col-sm-4 control-label required"><span class="field-name">Destination Location</span></label>
+									<div class="col-sm-8">
+										<input type="text" id="station_id" list="station-id-suggestions" class="form-control" required="required">
+										<datalist id="station-id-suggestions" data-ajax-append="ajax/update-station-list.html">
+										</datalist>
+										<code>(should autocomplete)</code>
+									</div>
+									<div class="form-group">
+											<label class="col-sm-4 control-label required">Destination Status</label>
+										<div class="col-sm-8">
+											<select class="form-control deployment-status-select">
+												<option class="other-option">ACTIVE</option>
+												<option class="other-option">INACTIVE</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+											<label class="col-sm-4 control-label required">Destination Deployment Status</label>
+										<div class="col-sm-8">
+											<select class="form-control deployment-status-select" readonly="readonly">
+												<option class="other-option">DEPLOYED</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type="text/javascript">
+							(function () {
+								const parent = document.currentScript.parentElement;
+								const deploymentStatus = parent.querySelector('.deployment-status-select');
+								const removedOptions = Array.from(deploymentStatus.querySelectorAll('.removed-option'));
+								const otherOptions = Array.from(deploymentStatus.querySelectorAll('.other-option'));
+								const moveButton = parent.querySelector('.btn-toggle');
+								const stationMoveContainer = parent.querySelector('.station-move-container');
+								
+								parent.querySelector('.device-status-select')
+								.addEventListener('change',e => {
+									const val = e.target.value;
+									if (val === "REMOVED") {
+										otherOptions.forEach(elem => elem.style.display = 'none');
+										removedOptions.forEach(elem => elem.style.display = '');
+										deploymentStatus.value = removedOptions[0].value;
+										moveButton.classList.remove('invisible');
+									} else {
+										removedOptions.forEach(elem => elem.style.display = 'none');
+										otherOptions.forEach(elem => elem.style.display = '');
+										deploymentStatus.value = otherOptions[0].value;
+										moveButton.classList.add('invisible');
+										stationMoveContainer.classList.add('hidden');
+										moveButton.classList.add('btn-default');
+										moveButton.classList.remove('btn-primary');
+									}
+								});
+								
+								moveButton.addEventListener('click', e => {
+									e.preventDefault();
+									e.stopPropagation();
+									
+									stationMoveContainer.classList.toggle('hidden');
+									e.target.classList.toggle('btn-primary');
+									e.target.classList.toggle('btn-default');
+								})
+							})();
+							</script>
 						</div>
 					</div>
 
+					<div class="panel panel-default communication-panel">
+						<header class="panel-heading">
+							<h6 class="panel-title">
+								Communication Information
+							</h6>
+						</header>	
+						
+						<div class="panel-body">
+							<code>
+								Here's a bunch of fields!
+							</code>
+						</div>
+					</div>
+					
+					<div class="form-group" effective-date></div>
+					<div class="form-group" remark remark-label></div>
+					
 				</details>
 				</template>
 
+				<div id="devices"></div>
+
+				<div class="form-group">
+					<button class="pull-right btn btn-primary" id="add-device-button">Add Device</button>
+				</div>
 
 				<script type="text/javascript">
-					const template = document.getElementById('device-template');
-					const container = document.querySelector('main form');
+					(function () {
+						'use strict';
+						const template = document.getElementById('device-template');
+						const container = document.getElementById('devices');
 
-					function getClone() {
-						return document.importNode(template.content, true);
-					}
+						function getClone() {
+							return document.importNode(template.content, true);
+						}
 
-					function addTemplate(clone) {
-						container.appendChild(clone ? clone : getClone());
-					}
+						function addTemplate(clone) {
+							container.appendChild(clone ? clone : getClone());
+							populateCustomElems();
+						}
 
+						document.getElementById('add-device-button').addEventListener('click', e => {
+							e.preventDefault();
+							addTemplate();
+						});
 
-					window.addEventListener('load', e => {
-						const clone = getClone();
-						const title = clone.querySelector('.device-title');
-						title.textContent = `Amasser 063-1`;
-						let cnt = 0;
-						for (let e of clone.querySelectorAll('.info-panel select, .info-panel input'))
-							e.disabled = !(++cnt === 5 || cnt === 6);
+						window.addEventListener('load', e => {
+							const clone = getClone();
+							const title = clone.querySelector('.device-title');
+							title.textContent = `Amasser 063-1`;
+							let cnt = 0;
+							for (let e of clone.querySelectorAll('.info-panel select, .info-panel input'))
+								e.disabled = !(++cnt === 5 || cnt === 6);
 
-						for (let e of clone.querySelectorAll('.info-panel input[type="text"]'))
-							e.value = randInt(1000000, 1);
+							for (let e of clone.querySelectorAll('.info-panel input[type="text"]'))
+								e.value = randInt(1000000, 1);
 
-						for (let e of clone.querySelectorAll('.funding-panel input'))
-							e.value = randInt(1000, 1);
+							for (let e of clone.querySelectorAll('.funding-panel input'))
+								e.value = randInt(1000, 1);
 
-						clone.querySelector('.funding-panel input[type="date"]').value = new Date().toISOString().slice(0, 10);
+							clone.querySelector('.funding-panel input[type="date"]').value = new Date().toISOString().slice(0, 10);
 
-						addTemplate(clone);
-					});
+							clone.querySelector('summary .btn').remove();
+
+							addTemplate(clone);
+						});
+					})();
 				</script>
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Deployment Status</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-								<option value="1">Option&#32;1</option>
-								<option value="2">Option&#32;2</option>
-								<option value="3">Option&#32;3</option>
-								<option value="4">Option&#32;4</option>
-							</select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="data1" class="col-sm-3 control-label">Effective Date</label>
-					<div class="col-sm-9">
-						<input type="text" id="data1" name="data1" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="data2" class="col-sm-3 control-label">Remark</label>
-					<div class="col-sm-9">
-						<textarea id="data2" rows="5" cols="35" name="data2" class="form-control"></textarea>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-3 col-sm-9">
-						<button class="btn btn-primary">+ Add another device</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-3 col-sm-9">
-						<button class="btn btn-primary">Update station information</button>
-					</div>
-				</div>
-				<h2>Station Communications</h2>
-				<code>this will be populated by the screen category in the HYDEX_3_VALID_DEVICE_CATEGORY</code>
-				<code>If </code>
+
+				<div class="form-group" data-ajax-replace="ajax/submit-button.html"></div>
 			</form>
 			<dl id="wb-dtmd">
 				<dt>Date modified:&#32;</dt>
