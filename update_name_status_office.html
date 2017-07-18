@@ -216,16 +216,9 @@
 							<div class="form-group">
 								<label for="station_id" class="col-sm-4 control-label"><span class="field-name">Station</span></label>
 								<div class="col-sm-8">
-									<input type="text" id="station_id" list="suggestions" class="form-control">
-									<datalist id="suggestions">
-											<option>123456789</option>
-											<option>abcdefghijklmnopqrstuvwxyz</option>
-											<option>99ZZ204</option>
-											<option>123456789</option>
-											<option>123456789</option>
-											<option>123456789</option>
-											<option>123456789</option>
-										</datalist>
+									<input type="text" id="station_id" list="station-id-suggestions" class="form-control">
+									<datalist id="station-id-suggestions" data-ajax-append="ajax/update-station-list.html">
+									</datalist>
 									<code>(should autocomplete)</code>
 								</div>
 							</div>
