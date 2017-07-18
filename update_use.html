@@ -121,6 +121,9 @@
 						<details open="open">
 							<summary>
 								<h2>Station Use</h2>
+								<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
+									<span class="glyphicon glyphicon-trash"></span>
+								</div>
 							</summary>
 							<history-tab>
 								<div class="form-group">
@@ -212,6 +215,7 @@
 								select.firstElementChild.remove();
 								let summary = clone.querySelector('summary');
 								summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
+								summary.querySelector('.btn').remove();
 							}
 							container.appendChild(clone);
 
