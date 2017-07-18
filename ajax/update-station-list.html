@@ -1,5 +1,6 @@
 <select id="_station-list-select"></select>
 <script>
+(function () {
     'use strict';
     const isChrome = browser() === 'Chrome';
     waitabit(1000).then((function () {
@@ -38606,4 +38607,6 @@
         }
         select.parentElement.innerHTML = html;
     }));
+    })();
 </script>
+
