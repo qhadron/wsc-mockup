@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!--[if lt IE 9]><html class="no-js lt-ie9" lang="en" dir="ltr"><![endif]-->
+<!--[if lt IE 9]>
+<html class="no-js lt-ie9" lang="en" dir="ltr">
+	<![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="en" dir="ltr">
 	<!--<![endif]-->
@@ -7,7 +9,7 @@
 	<head>
 		<meta charset="utf-8">
 		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
-		wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
+				wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
 		<title>99ZZ204 Devices, Communications - HYDEX Update
 		</title>
 		<meta content="width=device-width,initial-scale=1" name="viewport">
@@ -25,12 +27,14 @@
 		<link rel="stylesheet" href="theme-gc-intranet/css/theme.css">
 		<!--<![endif]-->
 		<!--[if lt IE 9]>
-		<link href="./theme-gc-intranet/assets/favicon.ico" rel="shortcut icon" />
-		<link rel="stylesheet" href="./theme-gc-intranet/css/ie8-theme.min.css" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<script src="./wet-boew/js/ie8-wet-boew.min.js"></script>
-		<![endif]-->
-		<noscript><link rel="stylesheet" href="./wet-boew/css/noscript.min.css" /></noscript>
+			<link href="./theme-gc-intranet/assets/favicon.ico" rel="shortcut icon" />
+			<link rel="stylesheet" href="./theme-gc-intranet/css/ie8-theme.min.css" />
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+			<script src="./wet-boew/js/ie8-wet-boew.min.js"></script>
+			<![endif]-->
+		<noscript>
+				<link rel="stylesheet" href="./wet-boew/css/noscript.min.css" />
+			</noscript>
 	</head>
 
 	<body vocab="http://schema.org/" typeof="WebPage">
@@ -83,9 +87,9 @@
 					<h2>Topics menu</h2>
 					<div class="row">
 						<ul class="list-inline menu">
-							<li><a href="./index-en.html">HYDEX Reports</a></li>
-							<li><a href="./docs/start-en.html#implement">HYDEX  update</a></li>
-							<li><a href="./docs/start-en.html">HYDEX Administration</a></li>
+							<li><a>HYDEX Reports</a></li>
+							<li><a>HYDEX update</a></li>
+							<li><a>HYDEX Administration</a></li>
 						</ul>
 					</div>
 				</div>
@@ -111,210 +115,304 @@
 		</header>
 		<div data-ajax-replace="ajax/login-info.html"></div>
 		<main role="main" property="mainContentOfPage" class="container">
-			<section class="alert alert-danger">
-				<p>
-					This section is still work in progress. Click <a href="#" class="alert-link" onclick="window.history.back()">here</a> to go back to the last page.
-				</p>
-			</section>
 			<h1 id="wb-cont" property="name">HYDEX update information 99ZZ204</h1>
 			<section>
 				<div data-ajax-replace="ajax/update-header.html"></div>
 			</section>
 			<form action="#" class="form-horizontal">
-				<h2>Device Life Cycle Management</h2>
+				<template id="device-template">
+				<details open="open">
+					<summary>
+						<h2 class="device-title">Device Life Cycle Management</h2>
+						<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
+							<span class="glyphicon glyphicon-trash"></span>
+						</div>
+					</summary>
 
-
-
-
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Device Category</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Device Make</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Device Model</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
-				</div>
-
-
-
-				<div class="form-group">
-					<label for="data1" class="col-sm-3 control-label">Firmware Version</label>
-					<div class="col-sm-9">
-						<input type="text" id="data1" name="data1" class="form-control">
-					</div>
-				</div>
-
-
-
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Qualified Device <code>Note: this is a new field</code></label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Yes</option>
-<option value="2">No</option>
-</select>
-					</div>
-				</div>
-
-
-
-				<div class="form-group">
-					<label for="data1" class="col-sm-3 control-label">Serial Number</label>
-					<div class="col-sm-9">
-						<input type="text" id="data1" name="data1" class="form-control">
-					</div>
-				</div>
-
-				<table>
-					<tr>
-						<td>
+					<div class="panel panel-default info-panel">
+						<header class="panel-heading">
+							<h6 class="panel-title">Device Information
+							</h6>
+						</header>
+						<div class="panel-body">
 							<div class="form-group">
-								<label for="data1" class="col-sm-3 control-label">Purchase Cost</label>
-								<div class="col-sm-9">
+								<label for="data4" class="col-sm-4 control-label model-label required">Category</label>
+								<div class="col-sm-8">
+									<select class="form-control" data-ajax-replace="ajax/update-device-data.html .category-option">
+											<option value="1">Option&#32;1</option>
+											<option value="2">Option&#32;2</option>
+											<option value="3">Option&#32;3</option>
+											<option value="4">Option&#32;4</option>
+										</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="data4" class="col-sm-4 control-label model-label required">Make</label>
+								<div class="col-sm-8">
+									<select class="form-control" data-ajax-replace="ajax/update-device-data.html .make-option">
+										<option value="1">Option&#32;1</option>
+										<option value="2">Option&#32;2</option>
+										<option value="3">Option&#32;3</option>
+										<option value="4">Option&#32;4</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="data4" class="col-sm-4 control-label model-label required">Model</label>
+								<div class="col-sm-8">
+									<select class="form-control" data-ajax-replace="ajax/update-device-data.html .model-option">
+										<option value="1">Option&#32;1</option>
+										<option value="2">Option&#32;2</option>
+										<option value="3">Option&#32;3</option>
+										<option value="4">Option&#32;4</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label model-label required">Serial Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="data1" class="col-sm-4 control-label">Firmware Version</label>
+								<div class="col-sm-8">
 									<input type="text" id="data1" name="data1" class="form-control">
 								</div>
 							</div>
-						</td>
-						<td>
 							<div class="form-group">
-								<label for="data1" class="col-sm-3 control-label">Purchase Date</label>
-								<div class="col-sm-9">
-									<input type="text" id="data1" name="data1" class="form-control">
+								<div class="col-sm-4 control-label">
+									<label for="data4" class="required">Qualified Device</label>
+									<div>
+										<code>Note: this is a new field</code>
+									</div>
+								</div>
+								<div class="col-sm-8">
+									<select name="data4" id="data4" class="form-control">
+								<option value="1">Yes</option>
+								<option value="2">No</option>
+							</select>
 								</div>
 							</div>
-						</td>
+						</div>
+					</div>
 
-						<td>
-							<div class="form-group">
-								<label for="data1" class="col-sm-3 control-label">Life Expectancy</label>
-								<div class="col-sm-9">
-									<input type="text" id="data1" name="data1" class="form-control">
+					<div class="panel panel-default funding-panel">
+						<header class="panel-heading">
+							<h6 class="panel-title">Funding Information</h6>
+						</header>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-4 form-group">
+									<label class="col-sm-4 control-label">Purchase Cost</label>
+									<div class="col-sm-8"><input type="number" class="form-control "></div>
+								</div>
+								<div class="col-sm-4 form-group">
+									<label class="col-sm-4 control-label">Purchase Date</label>
+									<div class="col-sm-8"><input type="date" class="form-control "></div>
+								</div>
+								<div class="col-sm-4 form-group">
+									<label class="col-sm-4 control-label">Life Expectancy</label>
+									<div class="col-sm-8"><input type="number" class="form-control "></div>
 								</div>
 							</div>
-						</td>
-					</tr>
-				</table>
+							
+							<hr>
+							
+							<div class="form-group">
+									<label class="col-sm-4 control-label">Operating Agency</label>
+								<div class="col-sm-8">
+									<select class="form-control" data-ajax-replace="ajax/update-device-data.html .agency-option"></select>
+								</div>
+							</div>
+							<div class="form-group">
+									<label class="col-sm-4 control-label">Owining Agency</label>
+								<div class="col-sm-8">
+									<select class="form-control" data-ajax-replace="ajax/update-device-data.html .agency-option"></select>
+								</div>
+							</div>
+							<div class="form-group">
+									<label class="col-sm-4 control-label">Funding Agency</label>
+								<div class="col-sm-8">
+									<select class="form-control" data-ajax-replace="ajax/update-device-data.html .agency-option"></select>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="panel panel-default status-panel">
+						<header class="panel-heading">
+							<h6 class="panel-title">Status</h6>
+						</header>
+						<div class="panel-body">
+							<div class="form-group">
+								<label class="col-sm-4 control-label required">Status</label>
+								<div class="col-sm-8">
+									<select class="form-control device-status-select" style="display: inline;">
+										<option selected>ACTIVE</option>
+										<option>INACTIVE</option>
+										<option>REMOVED</option>
+									</select>
+									<button class="btn-toggle btn btn-default invisible form-control">
+										Move Device
+									</button>
+								</div>
+							</div>
+							<div class="form-group">
+									<label class="col-sm-4 control-label required">Deployment Status</label>
+								<div class="col-sm-8">
+									<select class="form-control deployment-status-select">
+										<option class="other-option">DEPLOYED</option>
+										<option class="removed-option" style="display: none;">DEPLOYABLE</option>
+										<option class="removed-option" style="display: none;">NON-DEPLOYABLE</option>
+									</select>
+								</div>
+							</div>
+							<div class="station-move-container well hidden">
+								<div class="form-group">
+									<label for="station_id" class="col-sm-4 control-label required"><span class="field-name">Destination Location</span></label>
+									<div class="col-sm-8">
+										<input type="text" id="station_id" list="station-id-suggestions" class="form-control" required="required">
+										<datalist id="station-id-suggestions" data-ajax-append="ajax/update-station-list.html">
+										</datalist>
+										<code>(should autocomplete)</code>
+									</div>
+									<div class="form-group">
+											<label class="col-sm-4 control-label required">Destination Status</label>
+										<div class="col-sm-8">
+											<select class="form-control deployment-status-select">
+												<option class="other-option">ACTIVE</option>
+												<option class="other-option">INACTIVE</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+											<label class="col-sm-4 control-label required">Destination Deployment Status</label>
+										<div class="col-sm-8">
+											<select class="form-control deployment-status-select" readonly="readonly">
+												<option class="other-option">DEPLOYED</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type="text/javascript">
+							(function () {
+								const parent = document.currentScript.parentElement;
+								const deploymentStatus = parent.querySelector('.deployment-status-select');
+								const removedOptions = Array.from(deploymentStatus.querySelectorAll('.removed-option'));
+								const otherOptions = Array.from(deploymentStatus.querySelectorAll('.other-option'));
+								const moveButton = parent.querySelector('.btn-toggle');
+								const stationMoveContainer = parent.querySelector('.station-move-container');
+								
+								parent.querySelector('.device-status-select')
+								.addEventListener('change',e => {
+									const val = e.target.value;
+									if (val === "REMOVED") {
+										otherOptions.forEach(elem => elem.style.display = 'none');
+										removedOptions.forEach(elem => elem.style.display = '');
+										deploymentStatus.value = removedOptions[0].value;
+										moveButton.classList.remove('invisible');
+									} else {
+										removedOptions.forEach(elem => elem.style.display = 'none');
+										otherOptions.forEach(elem => elem.style.display = '');
+										deploymentStatus.value = otherOptions[0].value;
+										moveButton.classList.add('invisible');
+										stationMoveContainer.classList.add('hidden');
+										moveButton.classList.add('btn-default');
+										moveButton.classList.remove('btn-primary');
+									}
+								});
+								
+								moveButton.addEventListener('click', e => {
+									e.preventDefault();
+									e.stopPropagation();
+									
+									stationMoveContainer.classList.toggle('hidden');
+									e.target.classList.toggle('btn-primary');
+									e.target.classList.toggle('btn-default');
+								})
+							})();
+							</script>
+						</div>
+					</div>
+
+					<div class="panel panel-default communication-panel">
+						<header class="panel-heading">
+							<h6 class="panel-title">
+								Communication Information
+							</h6>
+						</header>	
+						
+						<div class="panel-body">
+							<code>
+								Here's a bunch of fields!
+							</code>
+						</div>
+					</div>
+					
+					<div class="form-group" effective-date></div>
+					<div class="form-group" remark remark-label></div>
+					
+				</details>
+				</template>
+
+				<div id="devices"></div>
 
 				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Operating Agency</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
+					<button class="pull-right btn btn-primary" id="add-device-button">Add Device</button>
 				</div>
 
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Owning Agency</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
-				</div>
+				<script type="text/javascript">
+					(function () {
+						'use strict';
+						const template = document.getElementById('device-template');
+						const container = document.getElementById('devices');
 
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Funding Agency</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
-				</div>
+						function getClone() {
+							return document.importNode(template.content, true);
+						}
 
+						function addTemplate(clone) {
+							container.appendChild(clone ? clone : getClone());
+							populateCustomElems();
+						}
 
-				<h3>Status</h3>
-				<div class="form-group">
-					<label for="data4" class="col-sm-3 control-label">Deployment Status</label>
-					<div class="col-sm-9">
-						<select name="data4" id="data4" class="form-control">
-<option value="1">Option&#32;1</option>
-<option value="2">Option&#32;2</option>
-<option value="3">Option&#32;3</option>
-<option value="4">Option&#32;4</option>
-</select>
-					</div>
-				</div>
+						document.getElementById('add-device-button').addEventListener('click', e => {
+							e.preventDefault();
+							addTemplate();
+						});
 
+						window.addEventListener('load', e => {
+							const clone = getClone();
+							const title = clone.querySelector('.device-title');
+							title.textContent = `Amasser 063-1`;
+							let cnt = 0;
+							for (let e of clone.querySelectorAll('.info-panel select, .info-panel input'))
+								e.disabled = !(++cnt === 5 || cnt === 6);
 
-				<div class="form-group">
-					<label for="data1" class="col-sm-3 control-label">Effective Date</label>
-					<div class="col-sm-9">
-						<input type="text" id="data1" name="data1" class="form-control">
-					</div>
-				</div>
+							for (let e of clone.querySelectorAll('.info-panel input[type="text"]'))
+								e.value = randInt(1000000, 1);
 
-				<div class="form-group">
-					<label for="data2" class="col-sm-3 control-label">Remark</label>
-					<div class="col-sm-9">
-						<textarea id="data2" rows="5" cols="35" name="data2" class="form-control"></textarea>
-					</div>
-				</div>
+							for (let e of clone.querySelectorAll('.funding-panel input'))
+								e.value = randInt(1000, 1);
 
-				<div class="form-group">
-					<div class="col-sm-offset-3 col-sm-9">
-						<button class="btn btn-primary">+ Add another device</button>
-					</div>
-				</div>
+							clone.querySelector('.funding-panel input[type="date"]').value = new Date().toISOString().slice(0, 10);
 
-				<div class="form-group">
-					<div class="col-sm-offset-3 col-sm-9">
-						<button class="btn btn-primary">Update station information</button>
-					</div>
-				</div>
+							clone.querySelector('summary .btn').remove();
 
+							addTemplate(clone);
+						});
+					})();
+				</script>
 
-				<h2>Station Communications</h2><code>this will be populated by the screen category in the HYDEX_3_VALID_DEVICE_CATEGORY</code>
-
-				<code>If </code>
-
-
+				<div class="form-group" data-ajax-replace="ajax/submit-button.html"></div>
 			</form>
-
-
-
 			<dl id="wb-dtmd">
 				<dt>Date modified:&#32;</dt>
 				<dd><time property="dateModified">2014-02-19</time></dd>
 			</dl>
 		</main>
-
 		<dl id="wb-dtmd">
 			<dt>Date modified:&#32;</dt>
 			<dd><time property="dateModified">2017-06-16</time></dd>
@@ -343,18 +441,17 @@
 							<li><a href="https://www.ec.gc.ca/rhc-wsc/">Water Survey of Canada</a></li>
 						</ul>
 					</section>
-
 				</nav>
 			</div>
 		</footer>
 		<!--[if gte IE 9 | !IE ]><!-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
 		<script src="./wet-boew/js/wet-boew.min.js"></script>
+		<script src="custom-elems.js"></script>
 		<!--<![endif]-->
 		<!--[if lt IE 9]>
-		<script src="./wet-boew/js/ie8-wet-boew2.min.js"></script>
-
-		<![endif]-->
+			<script src="./wet-boew/js/ie8-wet-boew2.min.js"></script>
+			<![endif]-->
 	</body>
 
 </html>
