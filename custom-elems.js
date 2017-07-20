@@ -36,9 +36,19 @@ browser = function () {
 		"Don't know";
 };
 
+defer = function () {
+	let resolve, reject;
+	let promise = new Promise((a, b) => {
+		resolve = a;
+		reject = b;
+	});
+	promise.resolve = resolve;
+	promise.reject = reject;
+	return promise;
+}
 
-randInt = function (range, start) {
-	return Math.floor(Math.random() * range) + (start || 0);
+randInt = function (range, start = 0) {
+	return Math.floor(Math.random() * range) + start;
 }
 
 waitabit = function (time, ...args) {
@@ -272,7 +282,7 @@ async function populateRemarks(force) {
 
 		// the following code operates on the duplicated element
 
-		if (elem.hasAttribute('date-selector')) {
+		if (false && elem.hasAttribute('date-selector')) {
 			const select = elem.querySelector('select');
 			select.addEventListener('change', onchange);
 			onchange();
@@ -324,15 +334,119 @@ function populateEffectiveDates() {
 }
 
 let populateHistoryTabs = (async function () {
-	const templatePromise = this.template || loadPageAsTemplate('ajax/templates/history-tab.html');
+	let templatePromise = this.template || loadPageAsTemplate('ajax/templates/history-tab.html');
+	let templateRow = this.templateRow || loadPageAsTemplate('ajax/templates/history-table-row.html');
+
+	function populateTable(table, slot) {
+		const template = templateRow;
+		let rowList = template.content.children;
+		const count = randInt(10, 2);
+		const groups = Array.from(slot.querySelectorAll('.form-group'));
+		const tbody = table.querySelector('tbody');
+		tbody.querySelectorAll('tr.generated').forEach(x => x.remove());
+		for (let i = 0; i < count; ++i) {
+			// autogenerate some name value changes
+			let data = groups
+				.map(group => {
+					const label = group.querySelector('label');
+					if (!label) return;
+					const input = group.querySelector('input, select, textarea');
+					let name = label.textContent;
+					let value;
+					if (input.tagName === "SELECT") {
+						const option = input.options[randInt(input.options.length)];
+						value = option.textContent || option.value;
+					}
+					else if (input.type === "checkbox") {
+						const values = [...group.querySelectorAll('input[type="checkbox"]')].map(e => e.value).filter(_ => Math.random() < .5);
+						value = values.join(', ') || "None";
+					}
+					else {
+						value = `Sample data ${randInt(100)}`;
+					}
+					return {
+						name,
+						value
+					};
+				})
+				.filter(x => x)
+				.filter(_ => Math.random() < .30) // only change like 30% of the stuff
+			;
+			if (data.length == 0) {
+				continue;
+			}
+			// entered date
+			const date =
+				new Date(946684800000 + randInt(Date.now() - 946684800000));
+			rowList[0].textContent = date
+				.toISOString()
+				.replace(/T|\.\d+Z$/g, " ")
+				.trim();
+			date.setTime(date.getTime() + (Math.random() < .80 ? 0 : randInt(4 * 24 * 60 * 60 * 1000)));
+			rowList[1].textContent = date
+				.toISOString()
+				.replace(/T|\.\d+Z$/g, " ")
+				.trim();
+			// user
+			rowList[2].textContent = `John Doe (DCS)`;
+
+			// changes
+			rowList[3].innerHTML = "";
+			data.map(({
+				name,
+				value
+			} = {}) => {
+				const block = document.createElement('div');
+				const n = document.createElement('strong');
+				n.textContent = name;
+				block.appendChild(n);
+				const v = document.createElement('span');
+				v.textContent = `: ${value}`;
+				block.appendChild(v);
+				return block;
+			}).forEach(block => {
+				rowList[3].appendChild(block);
+			});
+			// remark
+			rowList[4].textContent =
+				data
+				.map(({
+					name,
+					value
+				} = {}) => {
+					let roll = Math.random();
+					if (roll < .3) {
+						return `Changed ${name}`;
+					}
+					else if (roll < .6) {
+						return `Set ${name} to ${value} as a test`;
+					}
+					else {
+						return ``;
+					}
+				}).filter(x => x).join('. ') || "Made some changes...";
+
+			let row = document.createElement('tr');
+			row.classList.add('generated')
+			row.appendChild(document.importNode(template.content, true));
+			tbody.appendChild(row);
+		}
+	}
 
 	async function generateTab(elem) {
 		const template = await templatePromise;
-		const slots = Array.from(template.content.querySelectorAll('child-content') || []);
-		slots.forEach(s => s.innerHTML = elem.innerHTML);
+		const slot = template.content.querySelector('child-content');
+		const table = template.content.querySelector('generated > table');
+		templateRow = await templateRow;
+
+		slot.innerHTML = elem.innerHTML;
+		populateTable(table, slot);
 		let clone = document.importNode(template.content, true);
 		let arr = Array.from(clone.children);
 		elem.parentElement.replaceChild(clone, elem);
+		// $(clone.querySelector('generated table')).DataTable({
+		// 	ordering: [[0, 'desc']]
+		// });
 		return arr;
 	}
 
@@ -351,7 +465,7 @@ let populateHistoryTabs = (async function () {
 		if (this.first) {
 			await waitabit(1000);
 		}
-		generatedElems.forEach(e => $(e).trigger('wb-init.wb-tabs'));
+		generatedElems.forEach(e => $(e).trigger('wb-init.wb-tabs').trigger('wb-updated.wb-tables'));
 		populateCustomElems(true);
 	}
 }).bind({});
@@ -369,7 +483,7 @@ async function setPageHeader() {
 }
 
 populateCustomElems = async function (force) {
-	populateHistoryTabs();
+	await populateHistoryTabs();
 	populateRemarks(force);
 	populateEffectiveDates(force);
 	//	populateDateSelectors();
