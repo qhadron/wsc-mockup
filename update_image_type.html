@@ -34,6 +34,7 @@
 	</head>
 
 	<body vocab="http://schema.org/" typeof="WebPage">
+		<script type="text/javascript" src="custom-elems.js"></script>
 		<ul id="wb-tphp">
 			<li class="wb-slc">
 				<a class="wb-sl" href="#wb-cont">Skip to main content</a>
@@ -117,24 +118,25 @@
 			</section>
 			<div class="wb-frmvld">
 				<form class="form-horizontal">
-					<template history-tab>
+					<history-tab>
 						<div class="files"></div>
 						<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add File</button>
 						<script type="text/javascript">
-							let container = document.querySelector('.files');
+							(function () {
+								let container = document.querySelector('.files');
 
-							let index = -1;
+								let index = -1;
 
-							function addEntry(e) {
-								if (e) {
-									e.preventDefault();
-									e.stopPropagation();
-								}
-								let elem = document.createElement('details');
-								elem.open = true;
-								index++;
+								function addEntry(e) {
+									if (e) {
+										e.preventDefault();
+										e.stopPropagation();
+									}
+									let elem = document.createElement('details');
+									elem.open = true;
+									index++;
 
-								elem.innerHTML = `
+									elem.innerHTML = `
 										<summary>
 											<h2>File to upload <span id="summary-filename-${index}"></span></h2>
 											<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
@@ -180,29 +182,32 @@
 										<div class="form-group" remark="File ${index+1}" remark-label="File">
 										</div>
 										`;
-								let fileinput = elem.querySelector(`#file-${index}`);
-								let filelabel = fileinput.nextElementSibling;
-								let summary = elem.querySelector(`#summary-filename-${index}`);
-								fileinput.addEventListener('change',
-									function () {
-										let filename = this.value.split('\\').pop();
-										filelabel.firstElementChild.textContent = filename;
-										summary.textContent = `- ${filename}`;
+									let fileinput = elem.querySelector(`#file-${index}`);
+									let filelabel = fileinput.nextElementSibling;
+									let summary = elem.querySelector(`#summary-filename-${index}`);
+									fileinput.addEventListener('change',
+										function () {
+											let filename = this.value.split('\\').pop();
+											filelabel.firstElementChild.textContent = filename;
+											summary.textContent = `- ${filename}`;
+										});
+
+									container.appendChild(elem);
+
+									populateCustomElems();
+									return false;
+								};
+
+								Array.from(document.querySelectorAll('button.add-entry'))
+									.forEach(elem => {
+										elem.onclick = addEntry;
 									});
-
-								container.appendChild(elem);
-
-								populateCustomElems();
-								return false;
-							};
-
-							Array.from(document.querySelectorAll('button.add-entry'))
-								.forEach(elem => {
-									elem.onclick = addEntry;
-									elem.click();
-								});
+								if (container.childElementCount === 0) {
+									document.querySelector('button.add-entry').click();
+								}
+							})();
 						</script>
-					</template>
+					</history-tab>
 					<hr style="clear: right;">
 					<div class="form-group" data-ajax-replace="ajax/submit-button.html">
 					</div>
@@ -241,7 +246,6 @@
 		<!--[if gte IE 9 | !IE ]><!-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
 		<script src="./wet-boew/js/wet-boew.min.js"></script>
-		<script type="text/javascript" src="custom-elems.js"></script>
 		<!--<![endif]-->
 		<!--[if lt IE 9]>
 		<script src="./wet-boew/js/ie8-wet-boew2.min.js"></script>
