@@ -34,6 +34,7 @@
 	</head>
 
 	<body vocab="http://schema.org/" typeof="WebPage">
+		<script type="text/javascript" src="custom-elems.js"></script>
 		<ul id="wb-tphp">
 			<li class="wb-slc">
 				<a class="wb-sl" href="#wb-cont">Skip to main content</a>
@@ -144,7 +145,6 @@
 									let regulation = document.getElementById('regulation');
 									let degree = document.getElementById('degree');
 									regulation.addEventListener('change', e => {
-										console.log("changed!");
 										if (regulation.value === "N") {
 											degree.hidden = degree.disabled = true;
 										}
@@ -202,7 +202,6 @@
 		<!--[if gte IE 9 | !IE ]><!-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
 		<script src="./wet-boew/js/wet-boew.min.js"></script>
-		<script type="text/javascript" src="custom-elems.js"></script>
 		<!--<![endif]-->
 		<!--[if lt IE 9]>
 		<script src="./wet-boew/js/ie8-wet-boew2.min.js"></script>
