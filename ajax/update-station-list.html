@@ -5,9 +5,8 @@
     const isChrome = browser() === 'Chrome';
     waitabit(1000).then((function () {
         const select = document.getElementById('_station-list-select');
+        if (!select) return;
         const container = document.createElement('template').content;
-        if (select.childElementCount !== 0)
-            return;
         let html = '';
         const data = [
             {
