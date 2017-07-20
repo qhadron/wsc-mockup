@@ -118,149 +118,151 @@
 			<div class="wb-frmvld">
 				<form action="#" class="form-horizontal">
 					<script type="text/javascript">
-						// script to make table add rows work
-						window.addEventListener('load', function () {
-							let container = document.querySelector('.facilities');
+						(function () {
+							// script to make table add rows work
+							window.addEventListener('load', function () {
+								let container = document.querySelector('.facilities');
 
-							function facilityChoices(parentName) {
-								const num = 5;
-								let str = "";
-								for (let i = 0; i < num; ++i)
-									str += `<option>${parentName.toLowerCase()} facility ${i+1}</option>`;
-								return str;
-							}
-
-							function addEntry(e) {
-								if (e) {
-									e.preventDefault();
-									e.stopPropagation();
+								function facilityChoices(parentName) {
+									const num = 5;
+									let str = "";
+									for (let i = 0; i < num; ++i)
+										str += `<option>${parentName.toLowerCase()} facility ${i+1}</option>`;
+									return str;
 								}
-								let elem = document.createElement('details');
-								elem.open = true;
 
-								// summary
-								let summary = document.createElement('summary');
-								summary.appendChild(document.createElement('h2'));
-								if (container.childElementCount === 0) {
-									let ds = document.createElement('date-selector');
-									ds.setAttribute('container-selector', '.status, [effective-date], [remark]');
-									ds.setAttribute('parent-level', '2');
-									summary.appendChild(ds);
-								}
-								summary.firstElementChild.textContent = "Facility Type";
-								summary.innerHTML += `
+								function addEntry(e) {
+									if (e) {
+										e.preventDefault();
+										e.stopPropagation();
+									}
+									let elem = document.createElement('details');
+									elem.open = true;
+
+									// summary
+									let summary = document.createElement('summary');
+									summary.appendChild(document.createElement('h2'));
+									if (container.childElementCount === 0) {
+										let ds = document.createElement('date-selector');
+										ds.setAttribute('container-selector', '.status, [effective-date], [remark]');
+										ds.setAttribute('parent-level', '2');
+										summary.appendChild(ds);
+									}
+									summary.firstElementChild.textContent = "Facility Type";
+									summary.innerHTML += `
 										<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
 										<span class="glyphicon glyphicon-trash"></span>
 										</div>
 										`;
-								elem.appendChild(summary);
+									elem.appendChild(summary);
 
-								let historytab = document.createElement('history-tab');
+									let historytab = document.createElement('history-tab');
 
 
-								// Facility Type
-								let facilitytype = document.createElement('select');
-								let facilitytypelabel = document.createElement('label');
-								let facilitytypecontainer = document.createElement('div');
-								facilitytypecontainer.classList.add('form-group');
-								facilitytypelabel.classList.add('control-label', 'required', 'col-sm-4');
-								facilitytype.classList.add('form-control')
-								facilitytype.innerHTML =
-									`
+									// Facility Type
+									let facilitytype = document.createElement('select');
+									let facilitytypelabel = document.createElement('label');
+									let facilitytypecontainer = document.createElement('div');
+									facilitytypecontainer.classList.add('form-group');
+									facilitytypelabel.classList.add('control-label', 'required', 'col-sm-4');
+									facilitytype.classList.add('form-control')
+									facilitytype.innerHTML =
+										`
 									<option>CABLE WAY</option>
 									<option>INSTALLATION</option>
 									<option>WELL</option>
 									<option>SHELTER</option>
 									`;
-								facilitytypelabel.textContent = 'Facility Type';
-								facilitytypecontainer.appendChild(facilitytypelabel);
-								let facilitytypediv = document.createElement('div');
-								facilitytypediv.classList.add('col-sm-8');
-								facilitytypediv.appendChild(facilitytype);
-								facilitytypecontainer.appendChild(facilitytypediv);
-								let populateFacilities = function (e) {
-									let facility = elem.querySelector('.facility');
-									facility.innerHTML = facilityChoices(this.value);
-								}.bind(facilitytype);
-								facilitytype.addEventListener('input', populateFacilities);
-								historytab.appendChild(facilitytypecontainer);
+									facilitytypelabel.textContent = 'Facility Type';
+									facilitytypecontainer.appendChild(facilitytypelabel);
+									let facilitytypediv = document.createElement('div');
+									facilitytypediv.classList.add('col-sm-8');
+									facilitytypediv.appendChild(facilitytype);
+									facilitytypecontainer.appendChild(facilitytypediv);
+									let populateFacilities = function (e) {
+										let facility = elem.querySelector('.facility');
+										facility.innerHTML = facilityChoices(this.value);
+									}.bind(facilitytype);
+									facilitytype.addEventListener('input', populateFacilities);
+									historytab.appendChild(facilitytypecontainer);
 
-								// Facility
-								let facility = document.createElement('select');
-								let facilitylabel = document.createElement('label');
-								let facilitycontainer = document.createElement('div');
-								let facilitydiv = document.createElement('div');
-								facilitydiv.classList.add('col-sm-8');
-								facilitylabel.textContent = 'Facility';
-								facilitycontainer.classList.add('form-group');
-								facilitylabel.classList.add('control-label', 'required', 'col-sm-4');
-								facility.classList.add('form-control', 'facility')
-								facility.innerHTML =
-									`
+									// Facility
+									let facility = document.createElement('select');
+									let facilitylabel = document.createElement('label');
+									let facilitycontainer = document.createElement('div');
+									let facilitydiv = document.createElement('div');
+									facilitydiv.classList.add('col-sm-8');
+									facilitylabel.textContent = 'Facility';
+									facilitycontainer.classList.add('form-group');
+									facilitylabel.classList.add('control-label', 'required', 'col-sm-4');
+									facility.classList.add('form-control', 'facility')
+									facility.innerHTML =
+										`
 									`;
-								facilitycontainer.appendChild(facilitylabel);
-								facilitydiv.appendChild(facility);
-								facilitycontainer.appendChild(facilitydiv);
-								historytab.appendChild(facilitycontainer);
+									facilitycontainer.appendChild(facilitylabel);
+									facilitydiv.appendChild(facility);
+									facilitycontainer.appendChild(facilitydiv);
+									historytab.appendChild(facilitycontainer);
 
 
-								// Status
-								let statuscontainer = document.createElement('div');
-								let statusdiv = document.createElement('div');
-								statusdiv.classList.add('col-sm-8', 'status');
-								let status = document.createElement('select');
-								let statuslabel = document.createElement('label');
-								statuscontainer.classList.add('form-group');
-								statuslabel.classList.add('control-label', 'required', 'col-sm-4');
-								status.classList.add('form-control');
-								statuslabel.textContent = 'Status';
-								status.innerHTML =
-									`
+									// Status
+									let statuscontainer = document.createElement('div');
+									let statusdiv = document.createElement('div');
+									statusdiv.classList.add('col-sm-8', 'status');
+									let status = document.createElement('select');
+									let statuslabel = document.createElement('label');
+									statuscontainer.classList.add('form-group');
+									statuslabel.classList.add('control-label', 'required', 'col-sm-4');
+									status.classList.add('form-control');
+									statuslabel.textContent = 'Status';
+									status.innerHTML =
+										`
 									<option>ACTIVE</option>
 									<option>INACTIVE</option>
 									<option>MOTHBALLED</option>
 									<option>DISMANTLED</option>
 									`;
-								statuscontainer.appendChild(statuslabel);
-								statusdiv.appendChild(status);
-								statuscontainer.appendChild(statusdiv);
-								historytab.appendChild(statuscontainer);
+									statuscontainer.appendChild(statuslabel);
+									statusdiv.appendChild(status);
+									statuscontainer.appendChild(statusdiv);
+									historytab.appendChild(statuscontainer);
 
-								let dateremark = document.createElement('div');
-								dateremark.innerHTML = `
+									let dateremark = document.createElement('div');
+									dateremark.innerHTML = `
 									<div class="form-group" effective-date="Facility Type ${container.childElementCount}"></div>
 									<div class="form-group" remark="Facility Type ${container.childElementCount}" remark-label="Facility Type"></div>
 									`;
-								historytab.appendChild(dateremark);
+									historytab.appendChild(dateremark);
 
-								elem.appendChild(historytab);
+									elem.appendChild(historytab);
 
-								container.appendChild(elem);
+									container.appendChild(elem);
 
-								populateFacilities();
-								populateCustomElems();
+									populateFacilities();
+									populateCustomElems();
 
-								return false;
-							};
+									return false;
+								};
 
-							Array.from(document.querySelectorAll('button.add-entry'))
-								.forEach(elem => {
-									elem.onclick = addEntry;
-									// simulate existing data
-									setTimeout(_ => {
-										elem.click()
-										Array.from(container.firstElementChild.children)
-											.slice(1, 3)
-											.forEach(e => {
-												Array.from(e.querySelectorAll('select'))
-													.forEach(s => s.disabled = true);
-											});
-										// remove delete button
-										container.querySelector('div.btn.btn-danger').remove();
-									}, 0);
-								});
+								Array.from(document.querySelectorAll('button.add-entry'))
+									.forEach(elem => {
+										elem.onclick = addEntry;
+										// simulate existing data
+										setTimeout(_ => {
+											elem.click()
+											Array.from(container.firstElementChild.children)
+												.slice(1, 3)
+												.forEach(e => {
+													Array.from(e.querySelectorAll('select'))
+														.forEach(s => s.disabled = true);
+												});
+											// remove delete button
+											container.querySelector('div.btn.btn-danger').remove();
+										}, 0);
+									});
 
-						});
+							});
+						})();
 					</script>
 					<div class="facilities"></div>
 					<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add Facility Type</button>

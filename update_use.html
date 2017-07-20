@@ -199,41 +199,43 @@
 					</template>
 					<div class="uses"></div>
 					<script type="text/javascript">
-						let container = document.querySelector('.uses');
-						let template = document.getElementById('use-template');
-						let remark = template.content.querySelector('.remark');
-						let count = 0;
+						(function () {
+							let container = document.querySelector('.uses');
+							let template = document.getElementById('use-template');
+							let remark = template.content.querySelector('.remark');
+							let count = 0;
 
-						function addUse() {
-							let index = count++;
+							function addUse() {
+								let index = count++;
 
-							remark.setAttribute('remark', `Use-${index}`);
-							remark.setAttribute('remark-label', `Use`);
-							let clone = document.importNode(template.content, true);
-							if (index == 0) {
-								let select = clone.querySelector('select.use-select');
-								select.firstElementChild.remove();
-								let summary = clone.querySelector('summary');
-								summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
-								summary.querySelector('.btn').remove();
+								remark.setAttribute('remark', `Use-${index}`);
+								remark.setAttribute('remark-label', `Use`);
+								let clone = document.importNode(template.content, true);
+								if (index == 0) {
+									let select = clone.querySelector('select.use-select');
+									select.firstElementChild.remove();
+									let summary = clone.querySelector('summary');
+									summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
+									summary.querySelector('.btn').remove();
+								}
+								container.appendChild(clone);
+
+								waitabit().then(populateCustomElems());
 							}
-							container.appendChild(clone);
 
-							waitabit().then(populateCustomElems());
-						}
-
-						window.addEventListener('load', function () {
-							Array.from(document.querySelectorAll('.adduse'))
-								.forEach(elem => {
-									elem.addEventListener('click', e => {
-										e.preventDefault();
-										e.stopPropagation();
-										waitabit().then(addUse);
-										return false;
+							window.addEventListener('load', function () {
+								Array.from(document.querySelectorAll('.adduse'))
+									.forEach(elem => {
+										elem.addEventListener('click', e => {
+											e.preventDefault();
+											e.stopPropagation();
+											waitabit().then(addUse);
+											return false;
+										});
+										elem.click();
 									});
-									elem.click();
-								});
-						});
+							});
+						})();
 					</script>
 					<div class="form-group">
 						<button class="btn btn-primary pull-right adduse">Add use</button>

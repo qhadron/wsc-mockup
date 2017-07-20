@@ -133,6 +133,7 @@
 					<hr>
 					<template history-tab>
 						<script type="text/javascript">
+						(function () {
 					// script to make table add rows work
 						// add row to the table above
 						function addrow(e) {
@@ -416,8 +417,9 @@
 									stopPropagation: _ => {}
 								});
 							});
-				</script>
-									<fieldset style="border:none">
+							})();
+						</script>
+						<fieldset style="border:none">
 
 						<div class="form-group" style="clear:right">
 							<label for="data4" class="col-sm-4 control-label required">Cost Arrangement</label>

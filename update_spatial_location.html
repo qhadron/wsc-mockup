@@ -165,6 +165,7 @@
 						<hr>
 
 						<script type="text/javascript">
+						(function () {
 							Array.from(document.querySelectorAll('.degree-input-group'))
 								.forEach(function (group) {
 									let l = group.querySelector(".longform");
@@ -229,6 +230,7 @@
 									m.addEventListener("blur", onShortChange);
 									s.addEventListener("blur", onShortChange);
 								});
+							})();
 						</script>
 						<style type="text/css">
 							.degree-input-group .deg,
