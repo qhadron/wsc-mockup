@@ -355,6 +355,8 @@ let populateHistoryTabs = (async function () {
 					let value;
 					if (input.tagName === "SELECT") {
 						const option = input.options[randInt(input.options.length)];
+						if (!option)
+							return;
 						value = option.textContent || option.value;
 					}
 					else if (input.type === "checkbox") {
@@ -434,6 +436,7 @@ let populateHistoryTabs = (async function () {
 	}
 
 	async function generateTab(elem) {
+		elem.setAttribute('generated', "");
 		const template = await templatePromise;
 		const slot = template.content.querySelector('child-content');
 		const table = template.content.querySelector('generated > table');
@@ -453,6 +456,8 @@ let populateHistoryTabs = (async function () {
 	const generatedElems =
 		await Promise.all(
 			Array.from(document.querySelectorAll('history-tab, template[history-tab]'))
+			// ignore elements with generated attribute
+			.filter(e => !e.hasAttribute('generated'))
 			// generates tab and returns a promise that resolves with the children
 			.map(generateTab)
 			// flatten to single array
@@ -465,7 +470,9 @@ let populateHistoryTabs = (async function () {
 		if (this.first) {
 			await waitabit(1000);
 		}
-		generatedElems.forEach(e => $(e).trigger('wb-init.wb-tabs').trigger('wb-updated.wb-tables'));
+		generatedElems.forEach(e => {
+			$(e).trigger('wb-init.wb-tabs').trigger('wb-updated.wb-tables')
+		});
 		populateCustomElems(true);
 	}
 }).bind({});
