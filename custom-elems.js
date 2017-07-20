@@ -340,7 +340,7 @@ let populateHistoryTabs = (async function () {
 	function populateTable(table, slot) {
 		const template = templateRow;
 		let rowList = template.content.children;
-		const count = randInt(10, 1);
+		const count = randInt(10, 2);
 		const groups = Array.from(slot.querySelectorAll('.form-group'));
 		const tbody = table.querySelector('tbody');
 		tbody.querySelectorAll('tr.generated').forEach(x => x.remove());
@@ -375,17 +375,23 @@ let populateHistoryTabs = (async function () {
 			if (data.length == 0) {
 				continue;
 			}
-			// date
-			rowList[0].textContent =
-				new Date(946684800000 + randInt(Date.now() - 946684800000))
+			// entered date
+			const date =
+				new Date(946684800000 + randInt(Date.now() - 946684800000));
+			rowList[0].textContent = date
+				.toISOString()
+				.replace(/T|\.\d+Z$/g, " ")
+				.trim();
+			date.setTime(date.getTime() + (Math.random() < .80 ? 0 : randInt(4 * 24 * 60 * 60 * 1000)));
+			rowList[1].textContent = date
 				.toISOString()
 				.replace(/T|\.\d+Z$/g, " ")
 				.trim();
 			// user
-			rowList[1].textContent = `John Doe (DCS)`;
+			rowList[2].textContent = `John Doe (DCS)`;
 
 			// changes
-			rowList[2].innerHTML = "";
+			rowList[3].innerHTML = "";
 			data.map(({
 				name,
 				value
@@ -399,10 +405,10 @@ let populateHistoryTabs = (async function () {
 				block.appendChild(v);
 				return block;
 			}).forEach(block => {
-				rowList[2].appendChild(block);
+				rowList[3].appendChild(block);
 			});
 			// remark
-			rowList[3].textContent =
+			rowList[4].textContent =
 				data
 				.map(({
 					name,
