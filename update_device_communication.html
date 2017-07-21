@@ -281,9 +281,10 @@
 										<div class="form-group">
 												<label class="col-sm-4 control-label required">Destination Status</label>
 											<div class="col-sm-8">
-												<select class="form-control deployment-status-select">
+												<select class="form-control device-status-select">
 													<option class="other-option">ACTIVE</option>
 													<option class="other-option">INACTIVE</option>
+													<option>SHELVED</option>
 												</select>
 											</div>
 										</div>
@@ -292,6 +293,8 @@
 											<div class="col-sm-8">
 												<select class="form-control deployment-status-select" readonly="readonly">
 													<option class="other-option">DEPLOYED</option>
+													<option class="shelved-option">SHELVED DEPLOYABLE</option>
+													<option class="shelved-option">SHELVED NON-DEPLOYABLE</option>
 												</select>
 											</div>
 										</div>
@@ -314,6 +317,8 @@
 											removedOptions.forEach(elem => elem.style.display = '');
 											deploymentStatus.value = removedOptions[0].value;
 											moveButton.classList.remove('invisible');
+											moveButton.click();
+											moveButton.disabled = true;
 										} else {
 											removedOptions.forEach(elem => elem.style.display = 'none');
 											otherOptions.forEach(elem => elem.style.display = '');
@@ -321,7 +326,8 @@
 											moveButton.classList.add('invisible');
 											stationMoveContainer.classList.add('hidden');
 											moveButton.classList.add('btn-default');
-											moveButton.classList.remove('btn-primary');
+											moveButton.classList.remove('btn-success');
+											moveButton.disabled = false;
 										}
 									});
 									
@@ -330,9 +336,42 @@
 										e.stopPropagation();
 										
 										stationMoveContainer.classList.toggle('hidden');
-										e.target.classList.toggle('btn-primary');
+										e.target.classList.toggle('btn-success');
 										e.target.classList.toggle('btn-default');
-									})
+										
+										deploymentStatus.dispatchEvent(new Event('change'));
+									});
+									
+									parent.querySelector('.station-move-container .device-status-select')
+									.addEventListener('change', e => {
+										const val = e.target.value;
+										if (val === "SHELVED") {
+											Array.from(parent.querySelector('.station-move-container .deployment-status-select')
+												.querySelectorAll('.shelved-option'))
+											.forEach(elem => elem.style.display = '');
+											Array.from(parent.querySelector('.station-move-container .deployment-status-select')
+												.querySelectorAll('.other-option'))
+											.forEach(elem => elem.style.display = 'none');
+											parent.querySelector('.station-move-container .deployment-status-select')
+												.value = `SHELVED ${deploymentStatus.value}`;
+										} else {
+											Array.from(parent.querySelector('.station-move-container .deployment-status-select')
+												.querySelectorAll('.other-option'))
+											.forEach(elem => elem.style.display = '');
+											Array.from(parent.querySelector('.station-move-container .deployment-status-select')
+												.querySelectorAll('.shelved-option'))
+											.forEach(elem => elem.style.display = 'none');
+											parent.querySelector('.station-move-container .deployment-status-select')
+												.value = `DEPLOYED`;
+										}
+									});
+									
+									deploymentStatus.addEventListener('change', e => {
+										if (parent.querySelector('.station-move-container .device-status-select').value === "SHELVED") {
+											parent.querySelector('.station-move-container .deployment-status-select')
+												.value = `SHELVED ${deploymentStatus.value}`;
+										}
+									});
 								})();
 								</script>
 							</div>
