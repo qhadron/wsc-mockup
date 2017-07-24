@@ -303,7 +303,9 @@ function populateEffectiveDates() {
 	const attribute = 'effective-date';
 
 	function generateEffectiveDate(elem) {
-		let dateId = attribute + '-' + elem.getAttribute(attribute).replace(/ /g, '-');
+		populateEffectiveDates.counter = populateEffectiveDates.counter || 0;
+		populateEffectiveDates.counter += 1;
+		let dateId = attribute + '-' + elem.getAttribute(attribute).replace(/ /g, '-') + populateEffectiveDates.counter;
 		let labelText = (function () {
 			if (!elem.hasAttribute('label'))
 				return '';
@@ -316,7 +318,7 @@ function populateEffectiveDates() {
 		})();
 		let required = !elem.hasAttribute('optional');
 		elem.innerHTML = `
-<label for="" class="control-label col-sm-4 ${required ? 'required' : ''}">${labelText ? labelText + ' ' : ''}Effective Date</label>
+<label for="" class="control-label col-sm-4 ${required ? 'required' : ''}">${labelText ? labelText + ' ' : ''}Effective Date<br>(YYYY-MM-DD HH:MM:SS)</label>
 <div class="col-sm-8">
 	<label for="${dateId}-date" style="display: inline;"> </label>
 	<input style="display:inline;" class="form-control" type="date" id="${dateId}-date" name="${dateId}-date" data-rule-dateISO="true" placeholder="YYYY-MM-DD" ${required ? 'required="required"' : ""}/>
@@ -330,8 +332,10 @@ function populateEffectiveDates() {
 	const generatedElems = Array.from(document.querySelectorAll(`[${attribute}]`))
 		.filter(elem => elem.childElementCount === 0)
 		.map(generateEffectiveDate);
-	$(generatedElems).trigger('wb-init.wb-date')
-}
+	waitabit().then(_ => {
+		$(`input[type="date"]`).trigger('wb-init.wb-date');
+	});
+};
 
 let populateHistoryTabs = (async function () {
 	let templatePromise = this.template || loadPageAsTemplate('ajax/templates/history-tab.html');
