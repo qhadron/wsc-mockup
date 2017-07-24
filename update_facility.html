@@ -8,7 +8,7 @@
 		<meta charset="utf-8">
 		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
 		wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-		<title>99ZZ204 Facility Types - HYDEX Update
+		<title>99ZZ204 Infrastructure (Facility Type) - HYDEX Update
 		</title>
 		<meta content="width=device-width,initial-scale=1" name="viewport">
 		<!-- Meta data -->
@@ -127,7 +127,7 @@
 									const num = 5;
 									let str = "";
 									for (let i = 0; i < num; ++i)
-										str += `<option>${parentName.toLowerCase()} facility ${i+1}</option>`;
+										str += `<option>${parentName.toUpperCase()} FACILITY ${i+1}</option>`;
 									return str;
 								}
 
@@ -148,7 +148,12 @@
 										ds.setAttribute('parent-level', '2');
 										summary.appendChild(ds);
 									}
-									summary.firstElementChild.textContent = "Facility Type";
+									if (container.childElementCount === 0) {
+										summary.firstElementChild.textContent = "CABLE WAY FACILITY 1";
+									}
+									else {
+										summary.firstElementChild.textContent = "New Facility";
+									}
 									summary.innerHTML += `
 										<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
 										<span class="glyphicon glyphicon-trash"></span>
@@ -182,6 +187,7 @@
 									let populateFacilities = function (e) {
 										let facility = elem.querySelector('.facility');
 										facility.innerHTML = facilityChoices(this.value);
+										console.log("Called");
 									}.bind(facilitytype);
 									facilitytype.addEventListener('input', populateFacilities);
 									historytab.appendChild(facilitytypecontainer);
@@ -230,7 +236,7 @@
 									let dateremark = document.createElement('div');
 									dateremark.innerHTML = `
 									<div class="form-group" effective-date="Facility Type ${container.childElementCount}"></div>
-									<div class="form-group" remark="Facility Type ${container.childElementCount}" remark-label="Facility Type"></div>
+									<div class="form-group" remark="Facility Type ${container.childElementCount}"></div>
 									`;
 									historytab.appendChild(dateremark);
 
@@ -265,7 +271,7 @@
 						})();
 					</script>
 					<div class="facilities"></div>
-					<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add Facility Type</button>
+					<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add Facility</button>
 					<hr style="clear: right;">
 					<div class="form-group" data-ajax-replace="ajax/submit-button.html">
 					</div>
