@@ -341,101 +341,115 @@ let populateHistoryTabs = (async function () {
 	let templatePromise = this.template || loadPageAsTemplate('ajax/templates/history-tab.html');
 	let templateRow = this.templateRow || loadPageAsTemplate('ajax/templates/history-table-row.html');
 
-	function populateTable(table, slot) {
+	function generateTable(table, slot) {
 		const template = templateRow;
 		let rowList = template.content.children;
 		const count = randInt(10, 2);
 		const groups = Array.from(slot.querySelectorAll('.form-group'));
 		const tbody = table.querySelector('tbody');
 		tbody.querySelectorAll('tr.generated').forEach(x => x.remove());
-		for (let i = 0; i < count; ++i) {
-			// autogenerate some name value changes
-			let data = groups
-				.map(group => {
-					const label = group.querySelector('label');
-					if (!label) return;
-					const input = group.querySelector('input, select, textarea');
-					let name = label.textContent;
-					let value;
-					if (input.tagName === "SELECT") {
-						const option = input.options[randInt(input.options.length)];
-						if (!option)
-							return;
-						value = option.textContent || option.value;
-					}
-					else if (input.type === "checkbox") {
-						const values = [...group.querySelectorAll('input[type="checkbox"]')].map(e => e.value).filter(_ => Math.random() < .5);
-						value = values.join(', ') || "None";
-					}
-					else {
-						value = `Sample data ${randInt(100)}`;
-					}
-					return {
-						name,
-						value
-					};
-				})
-				.filter(x => x)
-				.filter(_ => Math.random() < .30) // only change like 30% of the stuff
-			;
-			if (data.length == 0) {
-				continue;
-			}
-			// entered date
-			const date =
-				new Date(946684800000 + randInt(Date.now() - 946684800000));
-			rowList[0].textContent = date
-				.toISOString()
-				.replace(/T|\.\d+Z$/g, " ")
-				.trim();
-			date.setTime(date.getTime() + (Math.random() < .80 ? 0 : randInt(4 * 24 * 60 * 60 * 1000)));
-			rowList[1].textContent = date
-				.toISOString()
-				.replace(/T|\.\d+Z$/g, " ")
-				.trim();
-			// user
-			rowList[2].textContent = `John Doe (DCS)`;
 
-			// changes
-			rowList[3].innerHTML = "";
-			data.map(({
-				name,
-				value
-			} = {}) => {
-				const block = document.createElement('div');
-				const n = document.createElement('strong');
-				n.textContent = name;
-				block.appendChild(n);
-				const v = document.createElement('span');
-				v.textContent = `: ${value}`;
-				block.appendChild(v);
-				return block;
-			}).forEach(block => {
-				rowList[3].appendChild(block);
-			});
-			// remark
-			rowList[4].textContent =
-				data
-				.map(({
+		let userTable = slot.querySelector('historical-table,template[historical-table]');
+
+		if (userTable) {
+			userTable = slot.removeChild(userTable);
+			if (userTable.tagName === "TEMPLATE")
+				userTable = userTable.content;
+			for (let row of userTable.querySelectorAll('tr')) {
+				row.classList.add('generated');
+				tbody.appendChild(row);
+			}
+		}
+		else {
+			for (let i = 0; i < count; ++i) {
+				// autogenerate some name value changes
+				let data = groups
+					.map(group => {
+						const label = group.querySelector('label');
+						if (!label) return;
+						const input = group.querySelector('input, select, textarea');
+						let name = label.textContent;
+						let value;
+						if (input.tagName === "SELECT") {
+							const option = input.options[randInt(input.options.length)];
+							if (!option)
+								return;
+							value = option.textContent || option.value;
+						}
+						else if (input.type === "checkbox") {
+							const values = [...group.querySelectorAll('input[type="checkbox"]')].map(e => e.value).filter(_ => Math.random() < .5);
+							value = values.join(', ') || "None";
+						}
+						else {
+							value = `Sample data ${randInt(100)}`;
+						}
+						return {
+							name,
+							value
+						};
+					})
+					.filter(x => x)
+					.filter(_ => Math.random() < .30) // only change like 30% of the stuff
+				;
+				if (data.length == 0) {
+					continue;
+				}
+				// entered date
+				const date =
+					new Date(946684800000 + randInt(Date.now() - 946684800000));
+				rowList[0].textContent = date
+					.toISOString()
+					.replace(/T|\.\d+Z$/g, " ")
+					.trim();
+				date.setTime(date.getTime() + (Math.random() < .80 ? 0 : randInt(4 * 24 * 60 * 60 * 1000)));
+				rowList[1].textContent = date
+					.toISOString()
+					.replace(/T|\.\d+Z$/g, " ")
+					.trim();
+				// user
+				rowList[2].textContent = `John Doe (DCS)`;
+
+				// changes
+				rowList[3].innerHTML = "";
+				data.map(({
 					name,
 					value
 				} = {}) => {
-					let roll = Math.random();
-					if (roll < .3) {
-						return `Changed ${name}`;
-					}
-					else if (roll < .6) {
-						return `Set ${name} to ${value} as a test`;
-					}
-					else {
-						return ``;
-					}
-				}).filter(x => x).join('. ') || "Made some changes...";
+					const block = document.createElement('div');
+					const n = document.createElement('strong');
+					n.textContent = name;
+					block.appendChild(n);
+					const v = document.createElement('span');
+					v.textContent = `: ${value}`;
+					block.appendChild(v);
+					return block;
+				}).forEach(block => {
+					rowList[3].appendChild(block);
+				});
+				// remark
+				rowList[4].textContent =
+					data
+					.map(({
+						name,
+						value
+					} = {}) => {
+						let roll = Math.random();
+						if (roll < .3) {
+							return `Changed ${name}`;
+						}
+						else if (roll < .6) {
+							return `Set ${name} to ${value} as a test`;
+						}
+						else {
+							return ``;
+						}
+					}).filter(x => x).join('. ') || "Made some changes...";
 
-			let row = document.createElement('tr');
-			row.classList.add('generated')
-			row.appendChild(document.importNode(template.content, true));
-			tbody.appendChild(row);
+				let row = document.createElement('tr');
+				row.classList.add('generated')
+				row.appendChild(document.importNode(template.content, true));
+				tbody.appendChild(row);
+			}
 		}
 	}
 
@@ -447,7 +461,8 @@ let populateHistoryTabs = (async function () {
 		templateRow = await templateRow;
 
 		slot.innerHTML = elem.innerHTML;
-		populateTable(table, slot);
+		generateTable(table, slot);
+
 		let clone = document.importNode(template.content, true);
 		let arr = Array.from(clone.children);
 		elem.parentElement.replaceChild(clone, elem);
