@@ -8,3 +8,6 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteRule ^(.*)$ $1.html
+
+# compress json data as well
+AddOutputFilterByType DEFLATE application/json
