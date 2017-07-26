@@ -131,7 +131,10 @@
 									return str;
 								}
 
+								let index = 0;
+
 								function addEntry(e) {
+									index += 1;
 									if (e) {
 										e.preventDefault();
 										e.stopPropagation();
@@ -187,7 +190,6 @@
 									let populateFacilities = function (e) {
 										let facility = elem.querySelector('.facility');
 										facility.innerHTML = facilityChoices(this.value);
-										console.log("Called");
 									}.bind(facilitytype);
 									facilitytype.addEventListener('input', populateFacilities);
 									historytab.appendChild(facilitytypecontainer);
@@ -243,6 +245,11 @@
 									elem.appendChild(historytab);
 
 									container.appendChild(elem);
+
+
+									if (index !== 1) {
+										historytab.setAttribute('generated', "");
+									}
 
 									populateFacilities();
 									populateCustomElems();
