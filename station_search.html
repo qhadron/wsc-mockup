@@ -8,7 +8,7 @@
 		<meta charset="utf-8">
 		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
 		wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-		<title>Station Search - HYDEX Update
+		<title>Station Update - HYDEX Update
 		</title>
 		<meta content="width=device-width,initial-scale=1" name="viewport">
 		<!-- Meta data -->
@@ -99,7 +99,7 @@
 								<a href="index.html">HYDEX Home</a>
 							</li>
 							<li>
-								Station Search
+								Station Update
 							</li>
 						</ol>
 					</div>
@@ -124,7 +124,7 @@
 										elem.checked = true;
 									};
 								</script>
-								<details id="station_search">
+								<details id="station_search" style="animation: none">
 									<summary>Search for Station</summary>
 									<form id="search-form" method="get">
 										<div class="form-group">
@@ -146,21 +146,21 @@
 										<input type="button" value="Search for stations" class="btn btn-primary mrgn-bttm-md" onclick="document.location.href='station_search_results.html'">
 									</form>
 								</details>
-								<details id="mystations">
+								<details id="mystations" style="animation: none">
 									<summary>My Stations</summary>
 									<div>
 										<table class="wb-tables table table-striped" data-ajax-replace='ajax/station-list-body.html'>
 										</table>
 									</div>
 								</details>
-								<details>
+								<details style="animation: none">
 									<summary>Create Station</summary>
-									<div style="overflow: hidden" class="wb-frmvld">
-										<form action="javascript:alert('Redirects to a page with some mandatory update sections.');" class="form-horizontal">
+									<div style="overflow: hidden">
+										<form action="javascript:alert('Redirects to a page with some mandatory update sections.');" class="form-horizontal" novalidate>
 											<div class="form-group">
 												<label class="col-sm-4 control-label required">New ID:</label>
 												<div class="col-sm-8">
-													<input type="text" class="form-control" required="required" pattern="^\d{2}[a-zA-Z]{2}[a-zA-Z0-9]{1}\d{2}$" placeholder="###AA### or ###AAA##" style="display: inline-block;" title="Format is 3 digits followed by two letters followed by a letter or a digit followed by two digits">
+													<input type="text" class="form-control" pattern="^\d{2}[a-zA-Z]{2}[a-zA-Z0-9]{1}\d{2}$" placeholder="###AA### or ###AAA##" style="display: inline-block;" title="Format is 3 digits followed by two letters followed by a letter or a digit followed by two digits">
 													<label style="display: inline-block; padding-left: 1em;">(ex: 99ZZ012 or 99ZZG03)</label>
 												</div>
 											</div>
