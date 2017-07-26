@@ -1,3 +1,9 @@
+const WetReadyPromise = new Promise((resolve, reject) => {
+	$(document).on('wb-ready.wb', e => {
+		resolve(e);
+	})
+});
+
 browser = function () {
 	// Return cached result if avalible, else get result then cache it.
 	if (browser.prototype._cachedResult)
@@ -458,42 +464,37 @@ let populateHistoryTabs = (async function () {
 		const template = await templatePromise;
 		const slot = template.content.querySelector('child-content');
 		const table = template.content.querySelector('generated > table');
+		const parent = elem.parentElement;
+		const domChangeFinishedPromise = defer();
+
 		templateRow = await templateRow;
 
 		slot.innerHTML = elem.innerHTML;
 		generateTable(table, slot);
 
 		let clone = document.importNode(template.content, true);
-		let arr = Array.from(clone.children);
-		elem.parentElement.replaceChild(clone, elem);
-		// $(clone.querySelector('generated table')).DataTable({
-		// 	ordering: [[0, 'desc']]
-		// });
-		return arr;
+
+		parent.replaceChild(clone, elem);
+
+		$(parent).find('table').on('wb-ready.wb-tables', evt => {
+			$(parent).find('.wb-tabs').on('wb-ready.wb-tabs', _ => {
+				domChangeFinishedPromise.resolve(parent.children);
+			}).trigger('wb-init.wb-tabs');
+		}).trigger('wb-init.wb-tables');
+
+		return domChangeFinishedPromise;
 	}
 
 	const generatedElems =
-		await Promise.all(
+		Promise.all(
 			Array.from(document.querySelectorAll('history-tab, template[history-tab]'))
 			// ignore elements with generated attribute
 			.filter(e => !e.hasAttribute('generated'))
 			// generates tab and returns a promise that resolves with the children
 			.map(generateTab)
-			// flatten to single array
-			.reduce(flatten, [])
-		);
+		).then(e => e.reduce(flatten, []));
 
-	if (generatedElems.length > 0) {
-		this.first = typeof this.first == "undefined";
-		// wait a bit and initialize tabs. Delay on first trigger must be at least 1s to account for wet initialization
-		if (this.first) {
-			await waitabit(1000);
-		}
-		generatedElems.forEach(e => {
-			$(e).trigger('wb-init.wb-tabs').trigger('wb-updated.wb-tables')
-		});
-		populateCustomElems(true);
-	}
+	return generatedElems;
 }).bind({});
 
 
@@ -509,6 +510,7 @@ async function setPageHeader() {
 }
 
 populateCustomElems = async function (force) {
+	await WetReadyPromise;
 	await populateHistoryTabs();
 	populateRemarks(force);
 	populateEffectiveDates(force);
