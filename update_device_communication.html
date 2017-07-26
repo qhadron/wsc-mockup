@@ -254,9 +254,6 @@
 											<option>INACTIVE</option>
 											<option>REMOVED</option>
 										</select>
-										<button class="btn-toggle btn btn-default invisible form-control">
-											Move Device
-										</button>
 									</div>
 								</div>
 								<div class="form-group">
@@ -266,81 +263,77 @@
 											<option class="other-option">DEPLOYED</option>
 											<option class="removed-option" style="display: none;">DEPLOYABLE</option>
 											<option class="removed-option" style="display: none;">NON-DEPLOYABLE</option>
+											<option class="removed-option" style="display: none;">DESTROYED</option>
 										</select>
 									</div>
 								</div>
-								<div class="station-move-container well hidden">
-									<div class="form-group">
-										<label for="station_id" class="col-sm-4 control-label required"><span class="field-name">Destination Location</span></label>
-										<div class="col-sm-8">
-											<input type="text" id="station_id" list="station-id-suggestions" class="form-control" required="required">
-											<datalist id="station-id-suggestions" data-ajax-append="ajax/update-station-list.html">
-											</datalist>
-											<code>(should autocomplete)</code>
-										</div>
-										<div class="form-group">
-												<label class="col-sm-4 control-label required">Destination Status</label>
-											<div class="col-sm-8">
-												<select class="form-control device-status-select">
-													<option class="other-option">ACTIVE</option>
-													<option class="other-option">INACTIVE</option>
-													<option>SHELVED</option>
-												</select>
+								<div class="station-move-container hidden">
+									<div class="panel panel-default">
+										<header class="panel-heading"><h6 class="panel-title"> Move Device </h6></header>
+										<div class="panel-body">
+											<div class="form-group">
+												<label for="station_id" class="col-sm-4 control-label required"><span class="field-name">Destination Location</span></label>
+												<div class="col-sm-8">
+													<input type="text" id="station_id" list="station-id-suggestions" class="form-control" required="required">
+													<datalist id="station-id-suggestions" data-ajax-append="ajax/update-station-list.html">
+													</datalist>
+													<code>(should be validated)</code>
+												</div>
 											</div>
-										</div>
-										<div class="form-group">
-												<label class="col-sm-4 control-label required">Destination Deployment Status</label>
-											<div class="col-sm-8">
-												<select class="form-control deployment-status-select" readonly="readonly">
-													<option class="other-option">DEPLOYED</option>
-													<option class="shelved-option">SHELVED DEPLOYABLE</option>
-													<option class="shelved-option">SHELVED NON-DEPLOYABLE</option>
-												</select>
+											<div class="form-group">
+													<label class="col-sm-4 control-label required">Destination Status</label>
+												<div class="col-sm-8">
+													<select class="form-control device-status-select">
+														<option class="other-option">ACTIVE</option>
+														<option class="other-option">INACTIVE</option>
+														<option>SHELVED</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+													<label class="col-sm-4 control-label required">Destination Deployment Status</label>
+												<div class="col-sm-8">
+													<select class="form-control deployment-status-select" disabled="disabled">
+														<option class="other-option">DEPLOYED</option>
+														<option class="shelved-option">SHELVED DEPLOYABLE</option>
+														<option class="shelved-option">SHELVED NON-DEPLOYABLE</option>
+													</select>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<script type="text/javascript">
 								(function () {
-									const parent = Array.from(document.querySelectorAll('.status-panel .panel-body')).pop();
+									const parent = Array.from(document.querySelectorAll('.status-panel > .panel-body')).pop();
 									const deploymentStatus = parent.querySelector('.deployment-status-select');
 									const removedOptions = Array.from(deploymentStatus.querySelectorAll('.removed-option'));
 									const otherOptions = Array.from(deploymentStatus.querySelectorAll('.other-option'));
-									const moveButton = parent.querySelector('.btn-toggle');
 									const stationMoveContainer = parent.querySelector('.station-move-container');
 									
-									parent.querySelector('.device-status-select')
-									.addEventListener('change',e => {
-										const val = e.target.value;
+									function checkChanges () {
+										const val = parent.querySelector('.device-status-select').value;
 										if (val === "REMOVED") {
 											otherOptions.forEach(elem => elem.style.display = 'none');
 											removedOptions.forEach(elem => elem.style.display = '');
-											deploymentStatus.value = removedOptions[0].value;
-											moveButton.classList.remove('invisible');
-											moveButton.click();
-											moveButton.disabled = true;
 										} else {
 											removedOptions.forEach(elem => elem.style.display = 'none');
 											otherOptions.forEach(elem => elem.style.display = '');
-											deploymentStatus.value = otherOptions[0].value;
-											moveButton.classList.add('invisible');
-											stationMoveContainer.classList.add('hidden');
-											moveButton.classList.add('btn-default');
-											moveButton.classList.remove('btn-success');
-											moveButton.disabled = false;
 										}
-									});
+										if (val === "REMOVED" && deploymentStatus.value != "DESTROYED") {
+											stationMoveContainer.classList.remove('hidden');
+										} else {
+											stationMoveContainer.classList.add('hidden');
+										}
+										let availableOptions = Array.from(deploymentStatus.options).filter(x => x.style.display != "none");
+										let value = availableOptions.find(x => x.value === deploymentStatus.value);
+										if (!value) {
+											deploymentStatus.value = availableOptions[0].value;	
+										}
+									}
 									
-									moveButton.addEventListener('click', e => {
-										e.preventDefault();
-										e.stopPropagation();
-										
-										stationMoveContainer.classList.toggle('hidden');
-										e.target.classList.toggle('btn-success');
-										e.target.classList.toggle('btn-default');
-										
-										deploymentStatus.dispatchEvent(new Event('change'));
-									});
+									parent.querySelector('.device-status-select')
+									.addEventListener('change',checkChanges);
 									
 									parent.querySelector('.station-move-container .device-status-select')
 									.addEventListener('change', e => {
@@ -367,6 +360,7 @@
 									});
 									
 									deploymentStatus.addEventListener('change', e => {
+										checkChanges();
 										if (parent.querySelector('.station-move-container .device-status-select').value === "SHELVED") {
 											parent.querySelector('.station-move-container .deployment-status-select')
 												.value = `SHELVED ${deploymentStatus.value}`;

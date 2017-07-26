@@ -34,7 +34,6 @@
 	</head>
 
 	<body vocab="http://schema.org/" typeof="WebPage">
-		<script type="text/javascript" src="custom-elems.js"></script>
 		<ul id="wb-tphp">
 			<li class="wb-slc">
 				<a class="wb-sl" href="#wb-cont">Skip to main content</a>
@@ -118,7 +117,7 @@
 			</section>
 			<div class="wb-frmvld">
 				<form class="form-horizontal">
-					<history-tab>
+					<template history-tab>
 						<div class="files"></div>
 						<button class="btn btn-primary pull-right add-entry" style="margin-bottom: 1em">Add File</button>
 						<script type="text/javascript">
@@ -207,7 +206,31 @@
 								}
 							})();
 						</script>
-					</history-tab>
+
+						<template historical-table>
+							<tr>
+								<td>2013-06-24 09:12:45</td>
+								<td>2013-06-24 09:12:45</td>
+								<td>John Doe (DCS)</td>
+								<td><strong>File to upload:</strong> <a href="javascript: alert('this should be a link to the file');">site_map_1.jpg</a></td>
+								<td>Added a site map</td>
+							</tr>
+							<tr>
+								<td>2013-06-25 09:12:45</td>
+								<td>2013-06-25 09:12:45</td>
+								<td>John Doe (DCS)</td>
+								<td><strong>File to upload:</strong> <a href="javascript: alert('this should be a link to the file');">location.jpg</a></td>
+								<td>Added a location map</td>
+							</tr>
+							<tr>
+								<td>2013-06-26 09:12:45</td>
+								<td>2013-06-26 09:12:45</td>
+								<td>John Doe (DCS)</td>
+								<td><strong>File to upload:</strong> <a href="javascript: alert('this should be a link to the file');">device_condition.jpg</a></td>
+								<td>Added a device condition photo</td>
+							</tr>
+						</template>
+					</template>
 					<hr style="clear: right;">
 					<div class="form-group" data-ajax-replace="ajax/submit-button.html">
 					</div>
@@ -245,6 +268,7 @@
 		</footer>
 		<!--[if gte IE 9 | !IE ]><!-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+		<script type="text/javascript" src="custom-elems.js"></script>
 		<script src="./wet-boew/js/wet-boew.min.js"></script>
 		<!--<![endif]-->
 		<!--[if lt IE 9]>
