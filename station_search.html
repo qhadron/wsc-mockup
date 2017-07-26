@@ -169,6 +169,64 @@
 										</form>
 									</div>
 								</details>
+								<details style="animation: none" open>
+									<summary>Assign Stations</summary>
+									<div>
+										<form action="#" class="form-horizontal" id="station-assign-form">
+											<div class="panel panel-default">
+												<header class="panel-heading">
+													<h6 class="panel-title">Add Stations</h6>
+												</header>
+												<div class="panel-body">
+													<div class="form-group">
+														<label class="control-label col-sm-4">Station Id</label>
+														<input type="text" class="form-control col-sm-7">
+														<span class="input-group-btn" style="display: inline">
+															<button class="btn input-sm btn-primary add-station-button">Add</button>
+														</span>
+														<span class="output" style="padding-left: 3em"></span>
+													</div>
+												</div>
+											</div>
+										</form>
+
+										<script type="text/javascript">
+											(async function () {
+												'use strict';
+												let station_data;
+												const form = document.querySelector('#station-assign-form');
+
+												const addStationButton = form.querySelector('.add-station-button');
+												const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
+												const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
+
+												addStationButton.addEventListener('click', evt => {
+													evt.preventDefault();
+													evt.stopPropagation();
+													(async function () {
+														station_data = station_data || fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text));;
+														const value = addStationInput.value;
+														let resolved = false;
+														// only show loading message after 200ms
+														waitabit(200).then(_ => {
+															if (!resolved)
+																addStationProgress.textContent = "Checking station id...";
+														});
+														station_data = await station_data;
+														if (!station_data.find(e => e.id === value)) {
+															addStationProgress.innerHTML = "<span style='color: red'>Invalid station id!</span>";
+														}
+														else {
+															addStationProgress.textContent = "";
+														}
+														resolved = true;
+													})();
+													return false;
+												});
+											})();;
+										</script>
+									</div>
+								</details>
 							</div>
 						</div>
 					</div>
