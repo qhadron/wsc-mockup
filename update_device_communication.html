@@ -161,7 +161,7 @@
 								<div class="form-group">
 									<label for="data4" class="col-sm-4 control-label model-label required">Model</label>
 									<div class="col-sm-8">
-										<select class="form-control" data-ajax-replace="ajax/update-device-data.html .model-option">
+										<select class="form-control model-option" data-ajax-replace="ajax/update-device-data.html .model-option">
 											<option value="1">Option&#32;1</option>
 											<option value="2">Option&#32;2</option>
 											<option value="3">Option&#32;3</option>
@@ -189,11 +189,20 @@
 										</div>
 									</div>
 									<div class="col-sm-8">
-										<select name="data4" id="data4" class="form-control">
-									<option value="1">Yes</option>
-									<option value="2">No</option>
-								</select>
+										<select name="data4" id="" class="form-control qualified-device-select" disabled>
+											<option value="1">Yes</option>
+											<option value="2">No</option>
+										</select>
 									</div>
+									<script>
+										(function () {
+											const parent = Array.from(document.querySelectorAll('.info-panel > .panel-body')).pop();
+											const select = parent.querySelector('.qualified-device-select');
+											const model = parent.querySelector('.model-option');
+											model.addEventListener('change', () => 
+												select.selectedIndex = model.value.charCodeAt(model.value.length-1) % 2 === 0 ? 0 : 1);
+										})();
+									</script>
 								</div>
 							</div>
 						</div>
@@ -430,7 +439,7 @@
 								title.textContent = `Amasser 063-1`;
 								let cnt = 0;
 								for (let e of clone.querySelectorAll('.info-panel select, .info-panel input'))
-									e.disabled = !(++cnt === 5 || cnt === 6);
+									e.disabled = !(++cnt === 5);
 
 								for (let e of clone.querySelectorAll('.info-panel input[type="text"]'))
 									e.value = randInt(1000000, 1);
