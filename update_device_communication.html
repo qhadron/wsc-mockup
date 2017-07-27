@@ -408,9 +408,10 @@
 							return document.importNode(template.content, true);
 						}
 
-						function addTemplate(clone) {
+						async function addTemplate(clone) {
 							container.appendChild(clone ? clone : getClone());
-							populateCustomElems();
+							await populateCustomElems();
+							return container.lastElementChild;
 						}
 
 						document.getElementById('add-device-button').addEventListener('click', e => {
@@ -419,26 +420,29 @@
 						});
 
 						window.addEventListener('load', e => {
-							const clone = getClone();
-							const title = clone.querySelector('.device-title');
-							title.textContent = `Amasser 063-1`;
-							let cnt = 0;
-							for (let e of clone.querySelectorAll('.info-panel select, .info-panel input'))
-								e.disabled = !(++cnt === 5 || cnt === 6);
+							(async function () {
+								let clone = getClone();
+								clone.querySelector('summary .btn').remove();
+								clone.querySelector('history-tab').removeAttribute('generated');
 
-							for (let e of clone.querySelectorAll('.info-panel input[type="text"]'))
-								e.value = randInt(1000000, 1);
+								clone = await addTemplate(clone);
+								const title = clone.querySelector('.device-title');
+								title.textContent = `Amasser 063-1`;
+								let cnt = 0;
+								for (let e of clone.querySelectorAll('.info-panel select, .info-panel input'))
+									e.disabled = !(++cnt === 5 || cnt === 6);
 
-							for (let e of clone.querySelectorAll('.funding-panel input'))
-								e.value = randInt(1000, 1);
+								for (let e of clone.querySelectorAll('.info-panel input[type="text"]'))
+									e.value = randInt(1000000, 1);
 
-							clone.querySelector('.funding-panel input[type="date"]').value = new Date().toISOString().slice(0, 10);
+								for (let e of clone.querySelectorAll('.funding-panel input'))
+									e.value = randInt(1000, 1);
 
-							clone.querySelector('summary .btn').remove();
+								clone.querySelector('.funding-panel input[type="date"]').value = new Date().toISOString().slice(0, 10);
 
-							clone.querySelector('history-tab').removeAttribute('generated');
-							addTemplate(clone);
+							})();
 						});
+
 					})();
 				</script>
 
