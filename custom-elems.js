@@ -374,6 +374,7 @@ let populateHistoryTabs = (async function () {
 						const label = group.querySelector('label');
 						if (!label) return;
 						const input = group.querySelector('input, select, textarea');
+						if (!input) return;
 						let name = label.textContent;
 						let value;
 						if (input.tagName === "SELECT") {
