@@ -180,50 +180,248 @@
 												<div class="panel-body">
 													<div class="form-group">
 														<label class="control-label col-sm-4">Station Id</label>
-														<input type="text" class="form-control col-sm-7">
-														<span class="input-group-btn" style="display: inline">
-															<button class="btn input-sm btn-primary add-station-button">Add</button>
+														<input type="text" class="form-control col-sm-8">
+														<span class="input-group-btn" style="display: inline;">
+															<button class="btn input-sm btn-primary add-station-button" style="margin-left: -1px;border-bottom-left-radius: 0; border-top-left-radius: 0;" disabled>Add</button>
 														</span>
 														<span class="output" style="padding-left: 3em"></span>
 													</div>
+													<div class="form-group">
+														<label class="control-label col-sm-4">Stations Belonging to Tech</label>
+														<select class="form-control col-sm-8">
+															<option>NOT ASSIGNED</option>
+															<option>OTTAWA ADMINS</option>
+															<option>USERNAME LASTNAME</option>
+														</select>
+														<span class="input-group-btn" style="display: inline">
+															<button class="btn input-sm btn-primary add-user-station-button" style="margin-left: -1px;border-bottom-left-radius: 0; border-top-left-radius: 0;">Add</button>
+														</span>
+														<section class="mfp-hide modal-dialog modal-content overlay-def" style="width: auto">
+															<header class="modal-header">
+																<h2 class="modal-title"></h2>
+															</header>
+															<div class="modal-body">
+																<div class="container"></div>
+															</div>
+															<div class="modal-footer">
+																<div class="form-group" style="justify-content: center; display: flex">
+																	<button class="form-control btn btn-primary popup-modal-dismiss">Add Stations</button>
+																	<button class="form-control btn btn-default popup-modal-dismiss">Cancel</button>
+																</div>
+															</div>
+														</section>
+													</div>
 												</div>
 											</div>
+											<template id="station-table">
+												<table class="table table-hover station-table">
+													<thead>
+														<th></th>
+														<th>Station Number</th>
+														<th>Station Name</th>
+														<th>Effective Date</th>
+														<th></th>
+													</thead>
+													<tbody></tbody>
+												</table>
+											</template>
+											<template id="station-table-row">
+												<tr>
+													<td><input type="checkbox" class="form-control"></td>	
+													<td class="slot"></td> 
+													<td class="slot"></td>
+													<td class="slot"></td>
+													<td>
+														<button class="form-control btn btn-danger" onclick="this.parentElement.parentElement.remove(); return false;">
+															<span class="glyphicon glyphicon-trash"></span>
+														</button>
+													</td>	
+												</tr>
+											</template>
+											<style type="text/css">
+												.station-table tr.selected {
+													background-color: #dff0d8;
+												}
+											</style>
 										</form>
 
 										<script type="text/javascript">
 											(async function () {
 												'use strict';
-												let station_data;
+
+												const makeStationSelectTable = (function (data, options = {
+													deletable: false
+												}) {
+													const {
+														deletable
+													} = options;
+													const tableTmpl = this.tableTmpl = this.tableTmpl || document.getElementById('station-table');
+													const rowTmpl = this.rowTmpl = this.rowTmpl || document.getElementById('station-table-row');
+													const rowSlots = this.rowSlots = this.rowSlots || Array.from(rowTmpl.content.querySelectorAll('.slot'));
+													const table = document.importNode(tableTmpl.content, true);
+													const tbody = table.querySelector('tbody');
+
+													// initialize template
+													this.first = typeof this.first === "undefined";
+													if (this.first) {
+														for (let slot of rowSlots) {
+															slot.style.verticalAlign = 'middle';
+														}
+													}
+
+													this.rowClicked = this.rowClicked || function (e) {}
+													tbody.addEventListener('click', evt => {
+														//find the row of the clicked element
+														let row = evt.target;
+														while (row && row.tagName !== "TR")
+															row = row.parentElement;
+														// some random place has been clicked, ignore...
+														if (!row) {
+															return;
+														}
+														// auto click checkbox
+														if (evt.target.tagName !== "INPUT") {
+															let checkbox = row.querySelector('input[type="checkbox"]');
+															if (checkbox && checkbox != evt.target) {
+																checkbox.dispatchEvent(new evt.constructor(evt.type, evt));
+															}
+														}
+														// checkbox clicked, add style to row
+														else {
+															row.classList.toggle('selected');
+														}
+
+													});
+
+													for (let info of data) {
+														let i = 0;
+														for (let key in info) {
+															rowSlots[i].textContent = info[key];
+															i += 1;
+														}
+														let clone = document.importNode(rowTmpl.content, true);
+														if (!deletable) {
+															clone.querySelector('button').parentElement.remove();
+														}
+														tbody.appendChild(clone);
+													}
+
+													return table;
+												}).bind({});
+
+												function prepareStationData(src) {
+													const propName = 'date';
+													let data = src.slice();
+													for (let info of data) {
+														if (!info[propName]) {
+															info[propName] = randDate();
+														}
+													}
+													data.sort((a, b) => a.id > b.id ? 1 : a.id === b.id ? 0 : -1);
+													data.forEach(x => x[propName] = x[propName].toISOString().slice(0, 10));
+													debugger;
+													return data;
+												}
+
+												const getStationData = (async function () {
+													if (this.station_data) {
+														return this.station_data.map(x => Object.assign({}, x));
+													}
+													else {
+														return fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text))
+															.then(data => {
+																this.station_data = data;
+																return getStationData();
+															});
+													}
+												}).bind({});
 												const form = document.querySelector('#station-assign-form');
 
-												const addStationButton = form.querySelector('.add-station-button');
-												const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
-												const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
+												// Station id
+												{
+													const addStationButton = form.querySelector('.add-station-button');
+													const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
+													const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
 
-												addStationButton.addEventListener('click', evt => {
-													evt.preventDefault();
-													evt.stopPropagation();
-													(async function () {
-														station_data = station_data || fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text));;
+													async function checkStationId() {
 														const value = addStationInput.value;
 														let resolved = false;
+														let station_data = getStationData();
+														let found;
 														// only show loading message after 200ms
 														waitabit(200).then(_ => {
 															if (!resolved)
 																addStationProgress.textContent = "Checking station id...";
 														});
 														station_data = await station_data;
-														if (!station_data.find(e => e.id === value)) {
+														found = station_data.find(e => e.id === value.trim().toUpperCase());
+														resolved = true;
+														if (!found) {
 															addStationProgress.innerHTML = "<span style='color: red'>Invalid station id!</span>";
 														}
 														else {
 															addStationProgress.textContent = "";
 														}
-														resolved = true;
-													})();
-													return false;
-												});
-											})();;
+														return found;
+													}
+
+													addStationInput.addEventListener('input', evt => {
+														(async function () {
+															addStationButton.disabled = !await checkStationId();
+														})();
+													});
+
+													addStationButton.addEventListener('click', evt => {
+														evt.preventDefault();
+														evt.stopPropagation();
+														return false;
+													});
+												}
+
+												// Station belonging to tech
+												{
+													const button = form.querySelector('.add-user-station-button');
+													const root = button.parentElement.parentElement;
+													const select = root.querySelector('select');
+													const popup = root.querySelector('.modal-dialog');
+													const title = popup.querySelector('.modal-title');
+													const container = popup.querySelector('.container');
+
+													button.addEventListener('click', e => {
+														e.preventDefault();
+														e.stopPropagation();
+														title.textContent = `Loading ${select.value} stations failed...`;
+
+														(async function () {
+															let data = getStationData();
+															while (container.hasChildNodes())
+																container.removeChild(container.firstChild);
+
+															// aim for 10 entries
+															{
+																let lastChar = select.value.charCodeAt(select.value.length - 1);
+																data = (await data).filter(x => x.id.charCodeAt(x.id.length - 1) % 10 === lastChar % 10).splice(0, lastChar % 10);
+															}
+
+															data = prepareStationData(data);
+
+															container.appendChild(makeStationSelectTable(data));
+															title.textContent = `${select.value} stations`;
+
+															$(document).trigger('open.wb-lbx', [
+															[
+																	{
+																		src: $(popup),
+																		type: "inline",
+																}
+															]
+														]);
+														})();
+
+														return false;
+													});
+												}
+											})();
 										</script>
 									</div>
 								</details>
