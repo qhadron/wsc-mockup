@@ -114,7 +114,7 @@
 				</div>
 			</nav>
 		</header>
-			<div data-ajax-replace="ajax/login-info.html"></div>
+		<div data-ajax-replace="ajax/login-info.html"></div>
 		<main role="main" property="mainContentOfPage" class="container">
 			<h1 id="wb-cont" property="name">HYDEX update information 99ZZ204</h1>
 			<section>
@@ -240,12 +240,16 @@
 											addrow();
 										}
 										let inputs = Array.from(document.getElementById('rowtable').querySelectorAll('input, select'));
-										inputs.forEach(e => e.disabled = true);
-										inputs.forEach(e => {
-											if (e.tagName == "INPUT") {
-												e.value = 2017;
+										let cnt = 0;
+										for (let input of inputs) {
+											switch (cnt) {
+												case 1:
+													break;
+												case 0:
+													input.value = 2017;
 											}
-										})
+											++cnt;
+										}
 										document.querySelector('#addrowbutton').onclick = function (e) {
 											if (e) {
 												e.preventDefault();
@@ -277,7 +281,7 @@
 								<div class="form-group">
 									<label for="pubperiod" class="col-sm-4 control-label required">
 										Publication period
-										</label>
+										</labl>
 									<div class="col-sm-8">
 										<div name="pubperiod" id="pubperiod" type="text" class="col-sm-8 form-control" disabled="disabled">
 											Current Operation
