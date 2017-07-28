@@ -169,10 +169,10 @@
 										</form>
 									</div>
 								</details>
-								<details style="animation: none" open>
+								<details style="animation: none">
 									<summary>Assign Stations</summary>
 									<div style="overflow-x: hidden">
-										<form action="#" class="form-horizontal" id="station-assign-form">
+										<form action="#" class="form-horizontal" id="station-assign-form" novalidate>
 											<div class="panel panel-default">
 												<header class="panel-heading">
 													<h6 class="panel-title">Add Stations</h6>
@@ -272,7 +272,7 @@
 												}
 												
 												tr.empty {
-													background-color: #f5f5f5;
+													background-color: #f0f0f0;
 													text-align: center;
 												}
 											</style>
@@ -281,296 +281,401 @@
 										</form>
 
 										<script type="text/javascript">
-											$(document).on('wb-ready.wb-tabs', () => {
-												(async function () {
-													'use strict';
+											if (typeof $ != "undefined")
+												$(document).on('wb-ready.wb-tabs', () => {
+													(async function () {
+														'use strict';
 
-													function prepareStationData(src) {
-														const propName = 'date';
-														let data = src.slice();
-														for (let info of data) {
-															if (!info[propName]) {
-																info[propName] = randDate();
-															}
-														}
-														data.sort((a, b) => a.id > b.id ? 1 : a.id === b.id ? 0 : -1);
-														data.forEach(x => x[propName] = x[propName].toISOString().slice(0, 10));
-														return data;
-													}
-
-													const makeRow = function (data, options = {
-														deletable: false
-													}) {
-														const {
-															deletable
-														} = options;
-														const rowTmpl = this.rowTmpl = this.rowTmpl || document.getElementById('station-table-row');
-
-														// initialize template
-														this.first = typeof this.first === "undefined";
-														if (this.first) {
-															for (let slot of rowTmpl.content.querySelectorAll('.slot')) {
-																slot.style.verticalAlign = 'middle';
-															}
-														}
-
-														for (let key in data) {
-															rowTmpl.content.querySelector(`.slot.${key}`).textContent = data[key];
-														}
-														let clone = document.importNode(rowTmpl.content, true);
-														if (!deletable) {
-															clone.querySelector('button').parentElement.remove();
-														}
-														return clone;
-													}.bind({});
-
-													function addStationRowToTable(table, data, options) {
-														let row;
-														if (!data) {
-															row = document.createElement('tr');
-															row.classList.add('empty');
-															row.innerHTML = `<td colspan="${table.querySelector('thead > tr').childElementCount}">No Stations Selected</td>`;
-														}
-														else {
-															// search table for existing data
-															let existing = new Set(
-																Array.from(table.querySelectorAll('.slot.id'))
-																.map(elem => elem.textContent.toUpperCase())
-															);
-
-															if (existing.has(data.id)) {
-																return null;
-															}
-
-															data = prepareStationData([Object.assign({}, data)])[0];
-
-															row = makeRow(data, options);
-															Array.from(table.querySelector('tbody').querySelectorAll('tr.empty'))
-																.forEach(x => x.remove());
-														}
-														return table.querySelector('tbody').appendChild(row);
-													}
-
-													const makeStationSelectTable = function (data, options = {
-														deletable: false
-													}) {
-														const {
-															deletable
-														} = options;
-														const tableTmpl = this.tableTmpl = this.tableTmpl || document.getElementById('station-table');
-														const table = document.importNode(tableTmpl.content, true).querySelector('table');
-														const tbody = table.querySelector('tbody');
-
-														this.rowClicked = this.rowClicked || function (e) {}
-														tbody.addEventListener('click', evt => {
-															//find the row of the clicked element
-															let row = evt.target;
-															while (row && row.tagName !== "TR")
-																row = row.parentElement;
-															// some random place has been clicked, ignore...
-															if (!row) {
-																return;
-															}
-															// auto click checkbox
-															if (evt.target.tagName !== "INPUT") {
-																let checkbox = row.querySelector('input[type="checkbox"]');
-																if (checkbox && checkbox != evt.target) {
-																	checkbox.dispatchEvent(new evt.constructor(evt.type, evt));
+														function prepareStationData(src) {
+															const propName = 'date';
+															let data = src.slice();
+															for (let info of data) {
+																if (!info[propName]) {
+																	info[propName] = randDate();
 																}
 															}
-															// checkbox clicked, add style to row
-															else {
-																row.classList.toggle('selected');
-															}
-
-														});
-
-														for (let info of data) {
-															tbody.appendChild(makeRow(info, options));
+															data.sort((a, b) => a.id > b.id ? 1 : a.id === b.id ? 0 : -1);
+															data.forEach(x => x[propName] = x[propName].toISOString().slice(0, 10));
+															return data;
 														}
 
-														return table;
-													}.bind({});
+														const makeRow = function (data, options = {
+															deletable: false
+														}) {
+															const {
+																deletable
+															} = options;
+															const rowTmpl = this.rowTmpl = this.rowTmpl || document.getElementById('station-table-row');
 
-													const getStationData = (async function () {
-														if (this.station_data) {
-															return this.station_data.map(x => Object.assign({}, x));
-														}
-														else {
-															return fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text))
-																.then(data => {
-																	this.station_data = data;
-																	return getStationData();
-																});
-														}
-													}).bind({});
-													const form = document.querySelector('#station-assign-form');
-
-													let stationListTable;
-													// Station List Table
-													{
-														const container = form.querySelector('.station-selection-container');
-
-
-														const table = makeStationSelectTable([], {
-															deletable: true
-														});
-
-														// set up table
-														{
-															table.classList.add('remove')
-															addStationRowToTable(table);
-															container.appendChild(table);
-															stationListTable = table;
-														}
-
-														// remove selected stations button
-														{
-															const button = container.querySelector('button');
-															button.addEventListener('click', evt => {
-																evt.preventDefault();
-																Array.from(table.querySelectorAll('tr'))
-																	.filter(row => {
-																		let checkbox = row.querySelector('input[type="checkbox"]');
-																		return checkbox && checkbox.checked;
-																	})
-																	.forEach(row => row.remove());
-															})
-														}
-													};
-
-													// Station id
-													{
-														const addStationButton = form.querySelector('.add-station-button');
-														const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
-														const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
-
-														function setErrorMsg(msg) {
-															addStationProgress.innerHTML = `<span style='color: red'>${msg}</span>`;
-														}
-
-														async function getStationDataFromInput() {
-															const value = addStationInput.value;
-															let resolved = false;
-															let station_data = getStationData();
-															let found;
-															// only show loading message after 200ms
-															waitabit(200).then(_ => {
-																if (!resolved)
-																	addStationProgress.textContent = "Checking station id...";
-															});
-															station_data = await station_data;
-															found = station_data.find(e => e.id === value.trim().toUpperCase());
-															resolved = true;
-															if (!found) {
-																setErrorMsg("Invalid station id!");
-															}
-															else {
-																addStationProgress.textContent = "";
-															}
-															return found;
-														}
-
-														addStationInput.addEventListener('input', evt => {
-															(async function () {
-																addStationButton.disabled = !await getStationDataFromInput();
-															})();
-														});
-
-														addStationButton.addEventListener('click', evt => {
-															evt.preventDefault();
-															evt.stopPropagation();
-															(async function () {
-																const data = await getStationDataFromInput();
-																let ret = addStationRowToTable(stationListTable, data, {
-																	deletable: true
-																});
-																if (!ret) {
-																	setErrorMsg("Station already added!");
+															// initialize template
+															this.first = typeof this.first === "undefined";
+															if (this.first) {
+																for (let slot of rowTmpl.content.querySelectorAll('.slot')) {
+																	slot.style.verticalAlign = 'middle';
 																}
-															})();
-															return false;
-														});
-													}
+															}
 
-													// Station belonging to tech
-													{
-														const triggerButton = form.querySelector('.add-user-station-button');
-														const root = triggerButton.parentElement.parentElement;
-														const popup = root.querySelector('.modal-dialog');
+															for (let key in data) {
+																rowTmpl.content.querySelector(`.slot.${key}`).textContent = data[key];
+															}
+															let clone = document.importNode(rowTmpl.content, true);
+															if (!deletable) {
+																clone.querySelector('button').parentElement.remove();
+															}
+															return clone;
+														}.bind({});
 
-														let stationTable;
-														// open modal title
-														{
-															const select = root.querySelector('select');
-															const title = popup.querySelector('.modal-title');
-															const container = popup.querySelector('.container');
-															triggerButton.addEventListener('click', e => {
-																e.preventDefault();
-																e.stopPropagation();
-																title.textContent = `Loading ${select.value} stations failed...`;
+														function addStationRowToTable(table, data, options) {
+															let row;
+															if (!data) {
+																row = document.createElement('tr');
+																row.classList.add('empty');
+																row.innerHTML = `<td colspan="${table.querySelector('thead > tr').childElementCount}">No Stations Selected</td>`;
+															}
+															else {
+																// search table for existing data
+																let existing = new Set(
+																	Array.from(table.querySelectorAll('.slot.id'))
+																	.map(elem => elem.textContent.toUpperCase())
+																);
 
-																(async function () {
-																	let data = getStationData();
-																	while (container.hasChildNodes())
-																		container.removeChild(container.firstChild);
+																if (existing.has(data.id)) {
+																	return null;
+																}
 
-																	// aim for 10 entries
-																	{
-																		let lastChar = select.value.charCodeAt(select.value.length - 1);
-																		data = (await data).filter(x => x.name.charCodeAt(x.id.length - 1) % 10 === lastChar % 10).filter(x => Math.random() < .05).splice(0, lastChar % 10);
+																data = prepareStationData([Object.assign({}, data)])[0];
+
+																row = makeRow(data, options);
+																Array.from(table.querySelector('tbody').querySelectorAll('tr.empty'))
+																	.forEach(x => x.remove());
+															}
+															return table.querySelector('tbody').appendChild(row);
+														}
+
+														const makeStationSelectTable = function (data, options = {
+															deletable: false
+														}) {
+															const {
+																deletable
+															} = options;
+															const tableTmpl = this.tableTmpl = this.tableTmpl || document.getElementById('station-table');
+															const table = document.importNode(tableTmpl.content, true).querySelector('table');
+															const tbody = table.querySelector('tbody');
+
+															this.rowClicked = this.rowClicked || function (e) {}
+															tbody.addEventListener('click', evt => {
+																//find the row of the clicked element
+																let row = evt.target;
+																while (row && row.tagName !== "TR")
+																	row = row.parentElement;
+																// some random place has been clicked, ignore...
+																if (!row) {
+																	return;
+																}
+																// auto click checkbox
+																if (evt.target.tagName !== "INPUT") {
+																	let checkbox = row.querySelector('input[type="checkbox"]');
+																	if (checkbox && checkbox != evt.target) {
+																		checkbox.dispatchEvent(new evt.constructor(evt.type, evt));
 																	}
-
-																	data = prepareStationData(data);
-																	stationTable = makeStationSelectTable(data);
-																	stationTable.classList.add('add');
-
-																	container.appendChild(stationTable);
-																	title.textContent = `${select.value} stations`;
-
-																	$(document).trigger('open.wb-lbx', [
-															[
-																			{
-																				src: $(popup),
-																				type: "inline",
 																}
-															]
-														]);
-																})();
+																// checkbox clicked, add style to row
+																else {
+																	row.classList.toggle('selected');
+																}
 
+															});
+
+															for (let info of data) {
+																tbody.appendChild(makeRow(info, options));
+															}
+
+															return table;
+														}.bind({});
+
+														const getStationData = (async function () {
+															if (this.station_data) {
+																return this.station_data.map(x => Object.assign({}, x));
+															}
+															else {
+																return fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text))
+																	.then(data => {
+																		this.station_data = data;
+																		return getStationData();
+																	});
+															}
+														}).bind({});
+														const form = document.querySelector('#station-assign-form');
+
+														let stationListTable;
+														// Station List Table
+														{
+															const container = form.querySelector('.station-selection-container');
+
+
+															const table = makeStationSelectTable([], {
+																deletable: true
+															});
+
+															// set up table
+															{
+																table.classList.add('remove')
+																addStationRowToTable(table);
+																container.appendChild(table);
+																stationListTable = table;
+															}
+
+															// remove selected stations button
+															{
+																const button = container.querySelector('button');
+																button.addEventListener('click', evt => {
+																	evt.preventDefault();
+																	Array.from(table.querySelectorAll('tr'))
+																		.filter(row => {
+																			let checkbox = row.querySelector('input[type="checkbox"]');
+																			return checkbox && checkbox.checked;
+																		})
+																		.forEach(row => row.remove());
+																})
+															}
+														};
+
+														// Station id
+														{
+															const addStationButton = form.querySelector('.add-station-button');
+															const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
+															const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
+
+															function setErrorMsg(msg) {
+																addStationProgress.innerHTML = `<span style='color: red'>${msg}</span>`;
+															}
+
+															async function getStationDataFromInput() {
+																const value = addStationInput.value;
+																let resolved = false;
+																let station_data = getStationData();
+																let found;
+																// only show loading message after 200ms
+																waitabit(200).then(_ => {
+																	if (!resolved)
+																		addStationProgress.textContent = "Checking station id...";
+																});
+																station_data = await station_data;
+																found = station_data.find(e => e.id === value.trim().toUpperCase());
+																resolved = true;
+																if (!found) {
+																	setErrorMsg("Invalid station id!");
+																}
+																else {
+																	addStationProgress.textContent = "";
+																}
+																return found;
+															}
+
+															addStationInput.addEventListener('input', evt => {
+																(async function () {
+																	addStationButton.disabled = !await getStationDataFromInput();
+																})();
+															});
+
+															addStationButton.addEventListener('click', evt => {
+																evt.preventDefault();
+																evt.stopPropagation();
+																(async function () {
+																	const data = await getStationDataFromInput();
+																	let ret = addStationRowToTable(stationListTable, data, {
+																		deletable: true
+																	});
+																	if (!ret) {
+																		setErrorMsg("Station already added!");
+																	}
+																})();
 																return false;
 															});
 														}
 
-														// add stations to main table
+														// Station belonging to tech
 														{
-															const addButton = popup.querySelector('button.btn-primary');
-															addButton.addEventListener('click', evt => {
-																(async function () {
-																	let stationdata = getStationData();
-																	const ids =
-																		new Set(Array.from(stationTable.querySelectorAll('tr'))
-																			.filter(row => {
-																				let checkbox = row.querySelector('input[type="checkbox"]');
-																				return checkbox && checkbox.checked;
-																			})
-																			.map(row => row.querySelector('.slot.id').textContent));
-																	stationdata = await stationdata;
+															const triggerButton = form.querySelector('.add-user-station-button');
+															const root = triggerButton.parentElement.parentElement;
+															const popup = root.querySelector('.modal-dialog');
 
-																	stationdata
-																		.filter(info => ids.has(info.id))
-																		.forEach(info => addStationRowToTable(stationListTable, info, {
-																			deletable: true
-																		}));
-																})();
-															});
+															let stationTable;
+															// open modal title
+															{
+																const select = root.querySelector('select');
+																const title = popup.querySelector('.modal-title');
+																const container = popup.querySelector('.container');
+																triggerButton.addEventListener('click', e => {
+																	e.preventDefault();
+																	e.stopPropagation();
+																	title.textContent = `Loading ${select.value} stations failed...`;
+
+																	(async function () {
+																		let data = getStationData();
+																		while (container.hasChildNodes())
+																			container.removeChild(container.firstChild);
+
+																		// aim for 10 entries
+																		{
+																			let lastChar = select.value.charCodeAt(select.value.length - 1);
+																			data = (await data).filter(x => x.name.charCodeAt(x.id.length - 1) % 10 === lastChar % 10).filter(x => Math.random() < .05).splice(0, lastChar % 10);
+																		}
+
+																		data = prepareStationData(data);
+																		stationTable = makeStationSelectTable(data);
+																		stationTable.classList.add('add');
+
+																		container.appendChild(stationTable);
+																		title.textContent = `${select.value} stations`;
+
+																		$(document).trigger('open.wb-lbx', [
+															[
+																				{
+																					src: $(popup),
+																					type: "inline",
+																}
+															]
+														]);
+																	})();
+
+																	return false;
+																});
+															}
+
+															// add stations to main table
+															{
+																const addButton = popup.querySelector('button.btn-primary');
+																addButton.addEventListener('click', evt => {
+																	(async function () {
+																		let stationdata = getStationData();
+																		const ids =
+																			new Set(Array.from(stationTable.querySelectorAll('tr'))
+																				.filter(row => {
+																					let checkbox = row.querySelector('input[type="checkbox"]');
+																					return checkbox && checkbox.checked;
+																				})
+																				.map(row => row.querySelector('.slot.id').textContent));
+																		stationdata = await stationdata;
+
+																		stationdata
+																			.filter(info => ids.has(info.id))
+																			.forEach(info => addStationRowToTable(stationListTable, info, {
+																				deletable: true
+																			}));
+																	})();
+																});
+															}
 														}
-													}
 
-												})();
-											});
+													})();
+												});
 										</script>
 									</div>
+								</details>
+								<details style="animation: none">
+									<summary>Assign Staff</summary>
+
+									<form action="#" class="form-horizontal" id="station-assign-form" style="overflow-x: hidden" novalidate>
+
+										<details>
+											<summary>
+												<h3>Current Assignment</h3>
+											</summary>
+											<table class="table table-hover table-bordered">
+												<thead>
+													<tr>
+														<th>Tech</th>
+														<th>Supervisor</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>JAMES WILLIAMS</td>
+														<td>NOAH SMITH</td>
+													</tr>
+													<tr>
+														<td>JOHN JACKSON</td>
+														<td>LIAM ANDERSON</td>
+													</tr>
+													<tr>
+														<td>ROBERT LEWIS</td>
+														<td>WILLIAM CLARK</td>
+													</tr>
+													<tr>
+														<td>MICHAEL HILL</td>
+														<td>MASON WRIGHT</td>
+													</tr>
+													<tr>
+														<td>WILLIAM ROBERTS</td>
+														<td>JAMES MITCHELL</td>
+													</tr>
+													<tr>
+														<td>DAVID JONES</td>
+														<td>BENJAMIN JOHNSON</td>
+													</tr>
+													<tr>
+														<td>RICHARD WHITE</td>
+														<td>JACOB THOMAS</td>
+													</tr>
+													<tr>
+														<td>CHARLES LEE</td>
+														<td>MICHAEL RODRIGUEZ</td>
+													</tr>
+													<tr>
+														<td>JOSEPH SCOTT</td>
+														<td>ELIJAH LOPEZ</td>
+													</tr>
+													<tr>
+														<td>THOMAS TURNER</td>
+														<td>ETHAN PEREZ</td>
+													</tr>
+												</tbody>
+											</table>
+										</details>
+										<div class="form-group">
+											<label class="col-sm-4 control-label">
+												Assign Tech
+												</label>
+											<div class="col-sm-8">
+												<select class="form-control" multiple>
+													<option>JAMES WILLIAMS</option>
+													<option>JOHN JACKSON</option>
+													<option>ROBERT LEWIS</option>
+													<option>MICHAEL HILL</option>
+													<option>WILLIAM ROBERTS</option>
+													<option>DAVID JONES</option>
+													<option>RICHARD WHITE</option>
+													<option>CHARLES LEE</option>
+													<option>JOSEPH SCOTT</option>
+													<option>THOMAS TURNER</option>												
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-4 control-label">
+												To Supervisor
+												</label>
+											<div class="col-sm-8">
+												<select class="form-control">
+													<option>NOAH SMITH</option>
+													<option>LIAM ANDERSON</option>
+													<option>WILLIAM CLARK</option>
+													<option>MASON WRIGHT</option>
+													<option>JAMES MITCHELL</option>
+													<option>BENJAMIN JOHNSON</option>
+													<option>JACOB THOMAS</option>
+													<option>MICHAEL RODRIGUEZ</option>
+													<option>ELIJAH LOPEZ</option>
+													<option>ETHAN PEREZ</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group" effective-date=""></div>
+
+										<div class="form-group" data-ajax-replace="ajax/submit-button.html">
+										</div>
+									</form>
 								</details>
 							</div>
 						</div>
