@@ -57,6 +57,10 @@ randInt = function (range, start = 0) {
 	return Math.floor(Math.random() * range) + start;
 }
 
+randDate = function (offset = 946684800000) {
+	return new Date(offset + randInt(Date.now() - offset));
+}
+
 waitabit = function (time, ...args) {
 	return new Promise(resolve => setTimeout(resolve, time, ...args));
 }
@@ -402,8 +406,7 @@ let populateHistoryTabs = (async function () {
 					continue;
 				}
 				// entered date
-				const date =
-					new Date(946684800000 + randInt(Date.now() - 946684800000));
+				const date = randDate();
 				rowList[0].textContent = date
 					.toISOString()
 					.replace(/T|\.\d+Z$/g, " ")

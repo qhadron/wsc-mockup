@@ -171,7 +171,7 @@
 								</details>
 								<details style="animation: none" open>
 									<summary>Assign Stations</summary>
-									<div>
+									<div style="overflow-x: hidden">
 										<form action="#" class="form-horizontal" id="station-assign-form">
 											<div class="panel panel-default">
 												<header class="panel-heading">
@@ -180,50 +180,395 @@
 												<div class="panel-body">
 													<div class="form-group">
 														<label class="control-label col-sm-4">Station Id</label>
-														<input type="text" class="form-control col-sm-7">
-														<span class="input-group-btn" style="display: inline">
-															<button class="btn input-sm btn-primary add-station-button">Add</button>
+														<input type="text" class="form-control col-sm-8">
+														<span class="input-group-btn" style="display: inline;">
+															<button class="btn input-sm btn-primary add-station-button" style="margin-left: -1px;border-bottom-left-radius: 0; border-top-left-radius: 0;" disabled>Add</button>
 														</span>
 														<span class="output" style="padding-left: 3em"></span>
 													</div>
+													<div class="form-group">
+														<label class="control-label col-sm-4">Stations Belonging to Tech</label>
+														<select class="form-control col-sm-8">
+															<option>NOT ASSIGNED</option>
+															<option>OTTAWA ADMINS</option>
+															<option>USERNAME LASTNAME</option>
+														</select>
+														<span class="input-group-btn" style="display: inline">
+															<button class="btn input-sm btn-primary add-user-station-button" style="margin-left: -1px;border-bottom-left-radius: 0; border-top-left-radius: 0;">Add</button>
+														</span>
+														<section class="mfp-hide modal-dialog modal-content overlay-def" style="width: auto">
+															<header class="modal-header">
+																<h2 class="modal-title"></h2>
+															</header>
+															<div class="modal-body">
+																<div class="container"></div>
+															</div>
+															<div class="modal-footer">
+																<div class="form-group" style="justify-content: center; display: flex">
+																	<button class="form-control btn btn-primary popup-modal-dismiss">Add Stations</button>
+																	<button class="form-control btn btn-default popup-modal-dismiss">Cancel</button>
+																</div>
+															</div>
+														</section>
+													</div>
 												</div>
 											</div>
+											<details open="" class="station-selection-container">
+												<summary>
+													<h2>Selected Stations</h2>
+												</summary>
+												<div>
+													<button class="btn btn-danger pull-right">
+														Remove Selected Stations
+													</button>
+												</div>
+											</details>
+											<div class="form-group">
+												<label class="col-sm-4 control-label">
+													Assign to
+												</label>
+												<div class="col-sm-8">
+													<select class="form-control">
+														<option>NOT ASSIGNED</option>
+														<option>OTTAWA ADMINS</option>
+														<option>USERNAME LASTNAME</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group" effective-date></div>
+
+											<template id="station-table">
+												<table class="table table-hover station-table">
+													<thead>
+														<th></th>
+														<th>Station Number</th>
+														<th>Station Name</th>
+														<th>Effective Date</th>
+														<th></th>
+													</thead>
+													<tbody></tbody>
+												</table>
+											</template>
+											<template id="station-table-row">
+												<tr>
+													<td><input type="checkbox" class="form-control"></td>	
+													<td class="slot id"></td> 
+													<td class="slot name"></td>
+													<td class="slot date"></td>
+													<td>
+														<button class="form-control btn btn-danger" onclick="this.parentElement.parentElement.remove(); return false;">
+															<span class="glyphicon glyphicon-trash"></span>
+														</button>
+													</td>	
+												</tr>
+											</template>
+											<style type="text/css">
+												.station-table.add tr.selected {
+													background-color: #dff0d8;
+												}
+												
+												.station-table.remove tr.selected {
+													background-color: #f2dede;
+												}
+												
+												tr.empty {
+													background-color: #f5f5f5;
+													text-align: center;
+												}
+											</style>
+
+											<div data-ajax-replace="ajax/submit-button.html"></div>
 										</form>
 
 										<script type="text/javascript">
-											(async function () {
-												'use strict';
-												let station_data;
-												const form = document.querySelector('#station-assign-form');
+											$(document).on('wb-ready.wb-tabs', () => {
+												(async function () {
+													'use strict';
 
-												const addStationButton = form.querySelector('.add-station-button');
-												const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
-												const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
+													function prepareStationData(src) {
+														const propName = 'date';
+														let data = src.slice();
+														for (let info of data) {
+															if (!info[propName]) {
+																info[propName] = randDate();
+															}
+														}
+														data.sort((a, b) => a.id > b.id ? 1 : a.id === b.id ? 0 : -1);
+														data.forEach(x => x[propName] = x[propName].toISOString().slice(0, 10));
+														return data;
+													}
 
-												addStationButton.addEventListener('click', evt => {
-													evt.preventDefault();
-													evt.stopPropagation();
-													(async function () {
-														station_data = station_data || fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text));;
-														const value = addStationInput.value;
-														let resolved = false;
-														// only show loading message after 200ms
-														waitabit(200).then(_ => {
-															if (!resolved)
-																addStationProgress.textContent = "Checking station id...";
-														});
-														station_data = await station_data;
-														if (!station_data.find(e => e.id === value)) {
-															addStationProgress.innerHTML = "<span style='color: red'>Invalid station id!</span>";
+													const makeRow = function (data, options = {
+														deletable: false
+													}) {
+														const {
+															deletable
+														} = options;
+														const rowTmpl = this.rowTmpl = this.rowTmpl || document.getElementById('station-table-row');
+
+														// initialize template
+														this.first = typeof this.first === "undefined";
+														if (this.first) {
+															for (let slot of rowTmpl.content.querySelectorAll('.slot')) {
+																slot.style.verticalAlign = 'middle';
+															}
+														}
+
+														for (let key in data) {
+															rowTmpl.content.querySelector(`.slot.${key}`).textContent = data[key];
+														}
+														let clone = document.importNode(rowTmpl.content, true);
+														if (!deletable) {
+															clone.querySelector('button').parentElement.remove();
+														}
+														return clone;
+													}.bind({});
+
+													function addStationRowToTable(table, data, options) {
+														let row;
+														if (!data) {
+															row = document.createElement('tr');
+															row.classList.add('empty');
+															row.innerHTML = `<td colspan="${table.querySelector('thead > tr').childElementCount}">No Stations Selected</td>`;
 														}
 														else {
-															addStationProgress.textContent = "";
+															// search table for existing data
+															let existing = new Set(
+																Array.from(table.querySelectorAll('.slot.id'))
+																.map(elem => elem.textContent.toUpperCase())
+															);
+
+															if (existing.has(data.id)) {
+																return null;
+															}
+
+															data = prepareStationData([Object.assign({}, data)])[0];
+
+															row = makeRow(data, options);
+															Array.from(table.querySelector('tbody').querySelectorAll('tr.empty'))
+																.forEach(x => x.remove());
 														}
-														resolved = true;
-													})();
-													return false;
-												});
-											})();;
+														return table.querySelector('tbody').appendChild(row);
+													}
+
+													const makeStationSelectTable = function (data, options = {
+														deletable: false
+													}) {
+														const {
+															deletable
+														} = options;
+														const tableTmpl = this.tableTmpl = this.tableTmpl || document.getElementById('station-table');
+														const table = document.importNode(tableTmpl.content, true).querySelector('table');
+														const tbody = table.querySelector('tbody');
+
+														this.rowClicked = this.rowClicked || function (e) {}
+														tbody.addEventListener('click', evt => {
+															//find the row of the clicked element
+															let row = evt.target;
+															while (row && row.tagName !== "TR")
+																row = row.parentElement;
+															// some random place has been clicked, ignore...
+															if (!row) {
+																return;
+															}
+															// auto click checkbox
+															if (evt.target.tagName !== "INPUT") {
+																let checkbox = row.querySelector('input[type="checkbox"]');
+																if (checkbox && checkbox != evt.target) {
+																	checkbox.dispatchEvent(new evt.constructor(evt.type, evt));
+																}
+															}
+															// checkbox clicked, add style to row
+															else {
+																row.classList.toggle('selected');
+															}
+
+														});
+
+														for (let info of data) {
+															tbody.appendChild(makeRow(info, options));
+														}
+
+														return table;
+													}.bind({});
+
+													const getStationData = (async function () {
+														if (this.station_data) {
+															return this.station_data.map(x => Object.assign({}, x));
+														}
+														else {
+															return fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text))
+																.then(data => {
+																	this.station_data = data;
+																	return getStationData();
+																});
+														}
+													}).bind({});
+													const form = document.querySelector('#station-assign-form');
+
+													let stationListTable;
+													// Station List Table
+													{
+														const container = form.querySelector('.station-selection-container');
+
+
+														const table = makeStationSelectTable([], {
+															deletable: true
+														});
+
+														// set up table
+														{
+															table.classList.add('remove')
+															addStationRowToTable(table);
+															container.appendChild(table);
+															stationListTable = table;
+														}
+
+														// remove selected stations button
+														{
+															const button = container.querySelector('button');
+															button.addEventListener('click', evt => {
+																evt.preventDefault();
+																Array.from(table.querySelectorAll('tr'))
+																	.filter(row => {
+																		let checkbox = row.querySelector('input[type="checkbox"]');
+																		return checkbox && checkbox.checked;
+																	})
+																	.forEach(row => row.remove());
+															})
+														}
+													};
+
+													// Station id
+													{
+														const addStationButton = form.querySelector('.add-station-button');
+														const addStationInput = addStationButton.parentElement.parentElement.querySelector('input[type="text"]');
+														const addStationProgress = addStationButton.parentElement.parentElement.querySelector('.output');
+
+														function setErrorMsg(msg) {
+															addStationProgress.innerHTML = `<span style='color: red'>${msg}</span>`;
+														}
+
+														async function getStationDataFromInput() {
+															const value = addStationInput.value;
+															let resolved = false;
+															let station_data = getStationData();
+															let found;
+															// only show loading message after 200ms
+															waitabit(200).then(_ => {
+																if (!resolved)
+																	addStationProgress.textContent = "Checking station id...";
+															});
+															station_data = await station_data;
+															found = station_data.find(e => e.id === value.trim().toUpperCase());
+															resolved = true;
+															if (!found) {
+																setErrorMsg("Invalid station id!");
+															}
+															else {
+																addStationProgress.textContent = "";
+															}
+															return found;
+														}
+
+														addStationInput.addEventListener('input', evt => {
+															(async function () {
+																addStationButton.disabled = !await getStationDataFromInput();
+															})();
+														});
+
+														addStationButton.addEventListener('click', evt => {
+															evt.preventDefault();
+															evt.stopPropagation();
+															(async function () {
+																const data = await getStationDataFromInput();
+																let ret = addStationRowToTable(stationListTable, data, {
+																	deletable: true
+																});
+																if (!ret) {
+																	setErrorMsg("Station already added!");
+																}
+															})();
+															return false;
+														});
+													}
+
+													// Station belonging to tech
+													{
+														const triggerButton = form.querySelector('.add-user-station-button');
+														const root = triggerButton.parentElement.parentElement;
+														const popup = root.querySelector('.modal-dialog');
+
+														let stationTable;
+														// open modal title
+														{
+															const select = root.querySelector('select');
+															const title = popup.querySelector('.modal-title');
+															const container = popup.querySelector('.container');
+															triggerButton.addEventListener('click', e => {
+																e.preventDefault();
+																e.stopPropagation();
+																title.textContent = `Loading ${select.value} stations failed...`;
+
+																(async function () {
+																	let data = getStationData();
+																	while (container.hasChildNodes())
+																		container.removeChild(container.firstChild);
+
+																	// aim for 10 entries
+																	{
+																		let lastChar = select.value.charCodeAt(select.value.length - 1);
+																		data = (await data).filter(x => x.name.charCodeAt(x.id.length - 1) % 10 === lastChar % 10).filter(x => Math.random() < .05).splice(0, lastChar % 10);
+																	}
+
+																	data = prepareStationData(data);
+																	stationTable = makeStationSelectTable(data);
+																	stationTable.classList.add('add');
+
+																	container.appendChild(stationTable);
+																	title.textContent = `${select.value} stations`;
+
+																	$(document).trigger('open.wb-lbx', [
+															[
+																			{
+																				src: $(popup),
+																				type: "inline",
+																}
+															]
+														]);
+																})();
+
+																return false;
+															});
+														}
+
+														// add stations to main table
+														{
+															const addButton = popup.querySelector('button.btn-primary');
+															addButton.addEventListener('click', evt => {
+																(async function () {
+																	let stationdata = getStationData();
+																	const ids =
+																		new Set(Array.from(stationTable.querySelectorAll('tr'))
+																			.filter(row => {
+																				let checkbox = row.querySelector('input[type="checkbox"]');
+																				return checkbox && checkbox.checked;
+																			})
+																			.map(row => row.querySelector('.slot.id').textContent));
+																	stationdata = await stationdata;
+
+																	stationdata
+																		.filter(info => ids.has(info.id))
+																		.forEach(info => addStationRowToTable(stationListTable, info, {
+																			deletable: true
+																		}));
+																})();
+															});
+														}
+													}
+
+												})();
+											});
 										</script>
 									</div>
 								</details>
