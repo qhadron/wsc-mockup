@@ -2,9 +2,17 @@
 <script>
     (async function () {
         'use strict';
-        let data = fetch('ajax/station-data.json').then(r => r.text()).then(text => JSON.parse(text));
+        const url = new URL('http://wlas01dtlabpc7.ncr.int.ec.gc.ca/api/database/__querystring');
+        url.searchParams.set('queryString', `SELECT WSC_STN_NO as id, STATION_NAME as name from HYDEX_3.STN_NAME_HISTORY name INNER JOIN HYDEX_3.WSC_STN_ID_LKUP lkup on name.STN_ID = lkup.STN_ID where CURRENT_FLAG='Y'`);
+        let data = fetch(url)
+            .then(r => r.json())
+            .then(data =>
+                data.rows
+                .filter(x => x.length > 0)
+                .map(x => ({ id: x[0], name: x[1] })))
+            .catch(err => fetch('ajax/station-data.json').then(r => r.json()));
         const isChrome = browser() === 'Chrome';
-        waitabit(1000).then((async function () {
+        waitabit(300).then((async function () {
             const select = document.getElementById('_station-list-select');
             if (!select) return;
             const container = document.createElement('template').content;
