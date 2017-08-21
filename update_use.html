@@ -218,6 +218,10 @@
 									summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
 									summary.querySelector('.btn').remove();
 								}
+								else {
+									const historytab = clone.querySelector('history-tab');
+									historytab.setAttribute('generated', '');
+								}
 								container.appendChild(clone);
 
 								waitabit().then(populateCustomElems());
