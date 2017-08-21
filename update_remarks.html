@@ -118,97 +118,113 @@
 			<div class="wb-frmvld">
 				<form class="form-horizontal">
 					<template id="remark-body">
-						<textarea class="remark"></textarea>
-						<div class="date"></div>
-						<div>
-						<select class="year-select"></select>
+						<div class="panel panel-default" style="width: 100%">
+							<div class="panel-body">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">Remark</label>
+									<textarea class="remark col-sm-8 form-control" rows="1" cols="60" placeholder="Enter remarks here"></textarea>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4 control-label">Entered Date</label>
+									<div class="col-sm-8 form-control date disabled" disabled></div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4 control-label">Entered Date</label>
+									<select class="col-sm-8 form-control year-select"></select>
+								</div>
+							</div>
 						</div>
 					</template>
 					<template id="remark-container">
-						<h2 class="title"></h2>
-						<div class="container"></div>
+						<details open="open">
+							<summary>
+								<h2 class="title"></h2>
+							</summary>
+						<history-tab class="remark-container"></history-tab>
+					</details>
 					</template>
 					<div id="remarks"></div>
 					<script type="text/javascript">
-						(async function () {
-							const container = document.getElementById('remarks');
+						window.addEventListener('load', () =>
+							(async function () {
+								const container = document.getElementById('remarks');
 
-							let data = await fetch('ajax/data/remarks.json').then(r => r.json());
-							window.data = data;
+								let data = await fetch('ajax/data/remarks.json').then(r => r.json());
+								window.data = data;
 
-							function makeRemarkBody(remark, date, year, availableYears) {
-								const template = document.getElementById('remark-body');
-								const clone = document.importNode(template.content, true);
+								function makeRemarkBody(remark, date, year, availableYears) {
+									const template = document.getElementById('remark-body');
+									const clone = document.importNode(template.content, true);
 
-								let elem;
+									let elem;
 
-								elem = clone.querySelector('.remark');
-								if (remark) {
-									elem.value = remark;
+									elem = clone.querySelector('.remark');
+									if (remark) {
+										elem.textContent = remark;
+									}
+
+									elem = clone.querySelector('.date');
+									if (remark) {
+										elem.textContent = date.slice(0, 10);
+									}
+									else {
+										elem.textContent = new Date().toISOString().slice(0, 10);
+									}
+
+									elem = clone.querySelector('.year-select');
+									if (availableYears) {
+										let i = 0;
+										availableYears.forEach(_year => {
+											const opt = document.createElement('option');
+											opt.value = _year;
+											opt.textContent = _year;
+											elem.appendChild(opt);
+											if (!year || year == _year) {
+												elem.selectedIndex = i;
+												opt.selected = true;
+											}
+											++i;
+										})
+									}
+									else {
+										elem.parentElement.remove();
+									}
+									return clone;
 								}
-								else {
-									elem.placeholder = `Enter remark text here`;
+
+								function makeRemarkContainer(category) {
+									const template = document.getElementById('remark-container');
+									const clone = document.importNode(template.content, true);
+
+									const container = clone.querySelector('.remark-container');
+									let elem;
+
+									elem = clone.querySelector('.title')
+									elem.textContent = category;
+
+									const values = data.values.filter(x => x.ENG_REMARK_TYPE_NAME === category);
+									if (values.length > 0) {
+										values
+											.map(entry =>
+												makeRemarkBody(entry.REMARK,
+													entry.STN_INFO_ENTERED_DATE,
+													entry.YEAR === '-999' ? null : entry.YEAR,
+													entry.TYPE_CATEGORY === 'A' ? data.years : null))
+											.forEach(elem => container.appendChild(elem));
+									}
+									else {
+										// default entry
+										container.appendChild(makeRemarkBody(null, null, null, null));
+									}
+									return clone;
 								}
 
-								elem = clone.querySelector('.date');
-								if (remark) {
-									elem.textContent = date.slice(0, 10);
-								}
-								else {
-									elem.textContent = new Date().toISOString().slice(0, 10);
-								}
+								data.types.map(type => makeRemarkContainer(type.ENG_REMARK_TYPE_NAME))
+									.forEach(elem => container.appendChild(elem));
 
-								elem = clone.querySelector('.year-select');
-								if (availableYears) {
-									let i = 0;
-									availableYears.forEach(_year => {
-										const opt = document.createElement('option');
-										opt.value = _year;
-										opt.textContent = _year;
-										elem.appendChild(opt);
-										if (!year || year == _year) {
-											elem.selectedIndex = i;
-											opt.selected = true;
-										}
-										++i;
-									})
-								}
-								else {
-									elem.parentElement.remove();
-								}
-								return clone;
-							}
-
-							function makeRemarkContainer(category) {
-								const template = document.getElementById('remark-container');
-								const clone = document.importNode(template.content, true);
-
-								const container = clone.querySelector('.container');
-								let elem;
-
-								elem = clone.querySelector('.title')
-								elem.textContent = category;
-
-								const values = data.values.filter(x => x.ENG_REMARK_TYPE_NAME === category);
-								if (values.length > 0) {
-									values
-										.map(entry =>
-											makeRemarkBody(entry.REMARK,
-												entry.STN_INFO_ENTERED_DATE,
-												entry.YEAR === '-999' ? null : entry.YEAR,
-												entry.TYPE_CATEGORY === 'A' ? data.years : null))
-										.forEach(elem => container.appendChild(elem));
-								}
-								else {
-									// default entry
-									container.appendChild(makeRemarkBody(null, null, null, null));
-								}
-								return clone;
-							}
-
-							data.types.map(type => makeRemarkContainer(type.ENG_REMARK_TYPE_NAME))
-								.forEach(elem => container.appendChild(elem));
-						})();
+								await waitabit();
+								populateCustomElems();
+							})());
 					</script>
 
 					<div class="form-group" data-ajax-replace="ajax/submit-button.html"></div>
