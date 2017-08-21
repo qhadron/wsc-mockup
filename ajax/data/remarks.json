@@ -1,0 +1,89 @@
+{
+    "types": [
+        {
+            "ENG_REMARK_TYPE_NAME": "GENERAL HYDROMETRIC",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "ANNUAL HYDROMETRIC",
+            "TYPE_CATEGORY": "A"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "GENERAL SEDIMENT",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "HISTORICAL DISCHARGE",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "HISTORICAL WATER LEVELS",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "ANNUAL SEDIMENT",
+            "TYPE_CATEGORY": "A"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "HISTORICAL SEDIMENT",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "CHANNEL AND CONTROL",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "MEASUREMENT SECTIONS",
+            "TYPE_CATEGORY": "G"
+  },
+        {
+            "ENG_REMARK_TYPE_NAME": "OHS CONSIDERATIONS",
+            "TYPE_CATEGORY": "G"
+  }
+],
+    "values": [
+        {
+            "REMARK": "test   test    test    test",
+            "YEAR": "2009",
+            "ENG_REMARK_TYPE_NAME": "ANNUAL HYDROMETRIC",
+            "STN_INFO_ENTERED_DATE": "2009-11-18T04:00:00.000Z",
+            "TYPE_CATEGORY": "A"
+    },
+        {
+            "REMARK": "test 2010",
+            "YEAR": "2010",
+            "ENG_REMARK_TYPE_NAME": "ANNUAL HYDROMETRIC",
+            "STN_INFO_ENTERED_DATE": "2017-08-17T04:00:00.000Z",
+            "TYPE_CATEGORY": "A"
+    },
+        {
+            "REMARK": "test 2011",
+            "YEAR": "2011",
+            "ENG_REMARK_TYPE_NAME": "ANNUAL HYDROMETRIC",
+            "STN_INFO_ENTERED_DATE": "2017-08-17T04:00:00.000Z",
+            "TYPE_CATEGORY": "A"
+    },
+        {
+            "REMARK": "This a test reamrk on April 22,2012",
+            "YEAR": "2012",
+            "ENG_REMARK_TYPE_NAME": "ANNUAL HYDROMETRIC",
+            "STN_INFO_ENTERED_DATE": "2012-04-23T04:00:00.000Z",
+            "TYPE_CATEGORY": "A"
+    },
+        {
+            "REMARK": "test 2017 remark",
+            "YEAR": "2017",
+            "ENG_REMARK_TYPE_NAME": "ANNUAL SEDIMENT",
+            "STN_INFO_ENTERED_DATE": "2017-08-17T04:00:00.000Z",
+            "TYPE_CATEGORY": "A"
+    },
+        {
+            "REMARK": "fgskldjfhaslkjfwlkef",
+            "YEAR": "-999",
+            "ENG_REMARK_TYPE_NAME": "CHANNEL AND CONTROL",
+            "STN_INFO_ENTERED_DATE": "2013-03-04T04:00:00.000Z",
+            "TYPE_CATEGORY": "G"
+    }
+  ],
+    "years": [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]
+}
