@@ -136,7 +136,7 @@
 						</div>
 					</template>
 					<template id="remark-container">
-						<details open="open">
+						<details>
 							<summary>
 								<h2 class="title"></h2>
 							</summary>
@@ -251,8 +251,11 @@
 								});
 
 								await Promise.all([populateCustomElems(), getAutosize()]);
-								Array.from(container.querySelectorAll('textarea'))
-									.forEach(elem => autosize(elem));
+								autosize(container.querySelectorAll('textarea'));
+								Array.from(container.querySelectorAll('details')).forEach(e => e.addEventListener('toggle', (e) => {
+									autosize(e.target.querySelectorAll('textarea'));
+									autosize.update(e.target.querySelectorAll('textarea'));
+								}));
 							})());
 					</script>
 
