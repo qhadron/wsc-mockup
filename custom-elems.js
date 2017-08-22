@@ -516,9 +516,11 @@ async function setPageHeader() {
 populateCustomElems = async function (force) {
 	await WetReadyPromise;
 	await populateHistoryTabs();
-	populateRemarks(force);
-	populateEffectiveDates(force);
-	//	populateDateSelectors();
+	await Promise.all([
+		populateRemarks(force),
+		populateEffectiveDates(force),
+		//	populateDateSelectors(),
+	]);
 };
 
 // generate remark elements

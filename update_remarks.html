@@ -118,7 +118,7 @@
 			<div class="wb-frmvld">
 				<form class="form-horizontal">
 					<template id="remark-body">
-						<div class="panel panel-default" style="width: 100%">
+						<div class="panel panel-default" style="width: 100%; margin-bottom: .5rem">
 							<div class="panel-body">
 								<div class="form-group">
 									<label class="col-sm-4 control-label">Remark</label>
@@ -129,7 +129,7 @@
 									<div class="col-sm-8 form-control date disabled" disabled></div>
 								</div>
 								<div class="form-group">
-									<label class="col-sm-4 control-label">Entered Date</label>
+									<label class="col-sm-4 control-label">Record Year</label>
 									<select class="col-sm-8 form-control year-select"></select>
 								</div>
 							</div>
@@ -140,7 +140,13 @@
 							<summary>
 								<h2 class="title"></h2>
 							</summary>
-						<history-tab class="remark-container"></history-tab>
+						<history-tab>
+							<div class="remark-container"></div>	
+							<div class="button-group" style="display: flex; flex-direction: column;">
+								<hr style="width: 100%">
+								<button class="add btn btn-primary" style="align-self: flex-end">Add Remark</button>
+							</div>
+						</history-tab>
 					</details>
 					</template>
 					<div id="remarks"></div>
@@ -181,7 +187,7 @@
 											elem.appendChild(opt);
 											if (!year || year == _year) {
 												elem.selectedIndex = i;
-												opt.selected = true;
+												opt.setAttribute('selected', 'selected');
 											}
 											++i;
 										})
@@ -192,7 +198,7 @@
 									return clone;
 								}
 
-								function makeRemarkContainer(category) {
+								function makeRemarkContainer({ ENG_REMARK_TYPE_NAME: category, TYPE_CATEGORY: type }) {
 									const template = document.getElementById('remark-container');
 									const clone = document.importNode(template.content, true);
 
@@ -214,16 +220,39 @@
 									}
 									else {
 										// default entry
-										container.appendChild(makeRemarkBody(null, null, null, null));
+										container.appendChild(makeRemarkBody(null, null, null, data.years));
 									}
+
+									if (type === 'A') {}
+									else {
+										clone.querySelector('.button-group').remove();
+									}
+
 									return clone;
 								}
 
-								data.types.map(type => makeRemarkContainer(type.ENG_REMARK_TYPE_NAME))
+								data.types.map(type => makeRemarkContainer(type))
 									.forEach(elem => container.appendChild(elem));
 
-								await waitabit();
-								populateCustomElems();
+								container.addEventListener('click', e => {
+									if (e.target && e.target.matches('button')) {
+										e.preventDefault();
+										const button = e.target;
+										const container = button.parentElement.parentElement.querySelector('.remark-container');
+
+										const elem = makeRemarkBody(null, null, null, data.years);
+										const ta = elem.querySelector('textarea');
+										container
+											.appendChild(elem);
+										getAutosize().then(() => {
+											autosize(ta);
+										})
+									}
+								});
+
+								await Promise.all([populateCustomElems(), getAutosize()]);
+								Array.from(container.querySelectorAll('textarea'))
+									.forEach(elem => autosize(elem));
 							})());
 					</script>
 
