@@ -365,6 +365,10 @@ let populateHistoryTabs = (async function () {
 			userTable = slot.removeChild(userTable);
 			if (userTable.tagName === "TEMPLATE")
 				userTable = userTable.content;
+			let headers = userTable.querySelector('thead');
+			if (headers) {
+				table.replaceChild(headers, table.querySelector('thead'));
+			}
 			for (let row of userTable.querySelectorAll('tr')) {
 				row.classList.add('generated');
 				tbody.appendChild(row);
@@ -466,8 +470,9 @@ let populateHistoryTabs = (async function () {
 	async function generateTab(elem) {
 		elem.setAttribute('generated', "");
 		const template = await templatePromise;
-		const slot = template.content.querySelector('child-content');
-		const table = template.content.querySelector('generated > table');
+		let clone = document.importNode(template.content, true);
+		const slot = clone.querySelector('child-content');
+		const table = clone.querySelector('generated > table');
 		const parent = elem.parentElement;
 		const domChangeFinishedPromise = defer();
 
@@ -476,7 +481,6 @@ let populateHistoryTabs = (async function () {
 		slot.innerHTML = elem.innerHTML;
 		generateTable(table, slot);
 
-		let clone = document.importNode(template.content, true);
 
 		parent.replaceChild(clone, elem);
 
@@ -516,9 +520,11 @@ async function setPageHeader() {
 populateCustomElems = async function (force) {
 	await WetReadyPromise;
 	await populateHistoryTabs();
-	populateRemarks(force);
-	populateEffectiveDates(force);
-	//	populateDateSelectors();
+	await Promise.all([
+		populateRemarks(force),
+		populateEffectiveDates(force),
+		//	populateDateSelectors(),
+	]);
 };
 
 // generate remark elements

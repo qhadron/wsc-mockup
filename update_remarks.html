@@ -8,7 +8,7 @@
 		<meta charset="utf-8">
 		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
 		wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-		<title>99ZZ204 Station Use - HYDEX Update
+		<title>99ZZ204 Station Remarks - HYDEX Update
 		</title>
 		<meta content="width=device-width,initial-scale=1" name="viewport">
 		<!-- Meta data -->
@@ -117,136 +117,147 @@
 			</section>
 			<div class="wb-frmvld">
 				<form class="form-horizontal">
-					<template id="use-template">
-						<details open="open">
+					<template id="remark-body">
+						<div class="panel panel-default" style="width: 100%; margin-bottom: .5rem">
+							<div class="panel-body">
+								<div class="form-group">
+									<label class="col-sm-4 control-label">Remark</label>
+									<textarea class="remark col-sm-8 form-control" rows="1" cols="60" placeholder="Enter remarks here"></textarea>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4 control-label">Entered Date</label>
+									<div class="col-sm-8 form-control date disabled" disabled></div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4 control-label">Record Year</label>
+									<select class="col-sm-8 form-control year-select"></select>
+								</div>
+							</div>
+						</div>
+					</template>
+					<template id="remark-container">
+						<details>
 							<summary>
-								<h2>Station Use</h2>
-								<div class="enable pull-right btn btn-danger" style="transform: translateY(-4px)" onclick="this.parentElement.parentElement.remove()">
-									<span class="glyphicon glyphicon-trash"></span>
-								</div>
+								<h2 class="title"></h2>
 							</summary>
-							<history-tab>
-								<div class="form-group">
-									<label for="data1" class="col-sm-4 control-label required">Use</label>
-									<div class="col-sm-8">
-										<select class="form-control use-select">
-											<option> </option>
-<option value="5">BASIN STUDIES</option>
-<option value="7">CANADA-US BOUNDARY AND TRANSBOUNDARY WATER MGMT.</option>
-<option value="23">CLIMATE CHANGE</option>
-<option value="63">COMMERCIAL STATION</option>
-<option value="27">DEVELOPMENT OF NEW OR IMPROVED TECHNOLOGY</option>
-<option value="64">DIVERSION MANAGEMENT</option>
-<option value="8">DROUGHT MONITORING AND REPORTING</option>
-<option value="28">ECOSYSTEM STUDIES</option>
-<option value="12">EMERGENCY PREPAREDNESS - SPILLS IN INLAND WATERS</option>
-<option value="30">FEDERAL INVENTORY</option>
-<option value="3">FISHERIES MANAGEMENT</option>
-<option value="18">FLOOD WARNING</option>
-<option value="16">FLOOD/FLOW FORECASTING</option>
-<option value="19">FLOODPLAIN MANAGEMENT</option>
-<option value="20">FORESTRY MANAGEMENT</option>
-<option value="36">GLOBAL ENERGY AND WATER CYCLE EXPERIMENT</option>
-<option value="10">GROUNDWATER CONTAMINATION</option>
-<option value="31">HERITAGE RIVERS MANAGEMENT</option>
-<option value="2">HYDROPOWER OPERATION</option>
-<option value="37">INTERBASIN TRANSFERS</option>
-<option value="42">INTERNATIONAL</option>
-<option value="35">INTERNATIONAL WATER RELATIONS</option>
-<option value="25">IRRIGATION & DRAINAGE</option>
-<option value="11">MANAGEMENT OF TOXIC CHEMICALS</option>
-<option value="32">MINING EXPLORATION</option>
-<option value="61">MUNICIPAL INFRASTRUCTURE</option>
-<option value="26">NATIONAL INTERJURISDICTIONAL WATER MANAGEMENT</option>
-<option value="22">NATIVE WATER RIGHTS</option>
-<option value="33">NORTHERN WATER RESOURCES MANAGEMENT</option>
-<option value="14">OPERATION OF DAM OR RESERVOIR</option>
-<option value="34">OTHER</option>
-<option value="13">PROJECT PLANNING & DESIGN</option>
-<option value="43">REAL TIME</option>
-<option value="24">RECREATION & PARKS MANAGEMENT</option>
-<option value="1">REFERENCE HYDROMETRIC BASIN NETWORK</option>
-<option value="15">REGIONAL HYDROLOGY</option>
-<option value="9">STATE OF ENVIRONMENT REPORTING</option>
-<option value="17">TRANSPORTATION & NAVIGATION</option>
-<option value="4">WATER QUALITY</option>
-<option value="6">WATER RESEARCH</option>
-<option value="21">WATER SUPPLY & SANITATION</option>
-<option value="29">WETLANDS MANAGEMENT</option>
-<option value="62">WILD LIFE MANAGEMENT</option>
-
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="data1" class="col-sm-4 control-label required">Priority</label>
-									<div class="col-sm-8">
-										<input type="number" class="form-control" min="1" max="9" required="required" data-rule-digits="true"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="data1" class="col-sm-4 control-label required">Status</label>
-									<div class="col-sm-8">
-										<select class="form-control">
-											<option value="21">ACTIVE</option>
-											<option value="22">INACTIVE</option>
-										</select>
-									</div>
-								</div>
-								<div class="form-group remark" remark remark-label></div>
-								<template historical-table>
-									<table><thead><tr><th>Entered Date (UTC)</th><th>USE</th><th>Priority</th><th>Status</th><th>Effective Date (UTC)</th><th>Remark</th><th>User</th><th>Current</th></tr></thead><tbody><tr><td>2017-06-13T22:42:45.000Z</td><td>REFERENCE HYDROMETRIC BASIN NETWORK</td><td>3</td><td>INACTIVE</td><td>2017-06-13T22:42:45.000Z</td><td></td><td>CHRIS.THOMSON</td><td>Y</td></tr><tr><td>2017-06-13T22:41:13.000Z</td><td>REFERENCE HYDROMETRIC BASIN NETWORK</td><td>3</td><td>INACTIVE</td><td>2017-06-13T22:41:13.000Z</td><td></td><td>CHRIS.THOMSON</td><td></td></tr><tr><td>2012-08-14T21:53:14.000Z</td><td>REFERENCE HYDROMETRIC BASIN NETWORK</td><td>3</td><td>ACTIVE</td><td>2012-08-14T21:53:14.000Z</td><td></td><td>JOE.MAC</td><td></td></tr><tr><td>2011-11-30T18:42:32.000Z</td><td>REFERENCE HYDROMETRIC BASIN NETWORK</td><td>2</td><td>ACTIVE</td><td>2011-11-30T18:42:32.000Z</td><td>Test Test Test</td><td>CHRIS.THOMSON</td><td></td></tr></tbody></table>
-								</template>
-					</history-tab>
+						<history-tab>
+							<div class="remark-container"></div>	
+							<div class="button-group" style="display: flex; flex-direction: column;">
+								<hr style="width: 100%">
+								<button class="add btn btn-primary" style="align-self: flex-end">Add Remark</button>
+							</div>
+						</history-tab>
 					</details>
 					</template>
-					<div class="uses"></div>
+					<div id="remarks"></div>
 					<script type="text/javascript">
-						(function () {
-							let container = document.querySelector('.uses');
-							let template = document.getElementById('use-template');
-							let remark = template.content.querySelector('.remark');
-							let count = 0;
+						window.addEventListener('load', () =>
+							(async function () {
+								const container = document.getElementById('remarks');
 
-							function addUse() {
-								let index = count++;
+								let data = await fetch('ajax/data/remarks.json').then(r => r.json());
+								window.data = data;
 
-								remark.setAttribute('remark', `Use-${index}`);
-								remark.setAttribute('remark-label', `Use`);
-								let clone = document.importNode(template.content, true);
-								if (index == 0) {
-									let select = clone.querySelector('select.use-select');
-									select.firstElementChild.remove();
-									let summary = clone.querySelector('summary');
-									summary.innerHTML += `<date-selector parent-level="2"></date-selector>`;
-									summary.querySelector('.btn').remove();
+								function makeRemarkBody(remark, date, year, availableYears) {
+									const template = document.getElementById('remark-body');
+									const clone = document.importNode(template.content, true);
+
+									let elem;
+
+									elem = clone.querySelector('.remark');
+									if (remark) {
+										elem.textContent = remark;
+									}
+
+									elem = clone.querySelector('.date');
+									if (remark) {
+										elem.textContent = date.slice(0, 10);
+									}
+									else {
+										elem.textContent = new Date().toISOString().slice(0, 10);
+									}
+
+									elem = clone.querySelector('.year-select');
+									if (availableYears) {
+										let i = 0;
+										availableYears.forEach(_year => {
+											const opt = document.createElement('option');
+											opt.value = _year;
+											opt.textContent = _year;
+											elem.appendChild(opt);
+											if (!year || year == _year) {
+												elem.selectedIndex = i;
+												opt.setAttribute('selected', 'selected');
+											}
+											++i;
+										})
+									}
+									else {
+										elem.parentElement.remove();
+									}
+									return clone;
 								}
-								else {
-									const historytab = clone.querySelector('history-tab');
-									historytab.setAttribute('generated', '');
+
+								function makeRemarkContainer({ ENG_REMARK_TYPE_NAME: category, TYPE_CATEGORY: type }) {
+									const template = document.getElementById('remark-container');
+									const clone = document.importNode(template.content, true);
+
+									const container = clone.querySelector('.remark-container');
+									let elem;
+
+									elem = clone.querySelector('.title')
+									elem.textContent = category;
+
+									const values = data.values.filter(x => x.ENG_REMARK_TYPE_NAME === category);
+									if (values.length > 0) {
+										values
+											.map(entry =>
+												makeRemarkBody(entry.REMARK,
+													entry.STN_INFO_ENTERED_DATE,
+													entry.YEAR === '-999' ? null : entry.YEAR,
+													entry.TYPE_CATEGORY === 'A' ? data.years : null))
+											.forEach(elem => container.appendChild(elem));
+									}
+									else {
+										// default entry
+										container.appendChild(makeRemarkBody(null, null, null, data.years));
+									}
+
+									if (type === 'A') {}
+									else {
+										clone.querySelector('.button-group').remove();
+									}
+
+									return clone;
 								}
-								container.appendChild(clone);
 
-								waitabit().then(populateCustomElems());
-							}
+								data.types.map(type => makeRemarkContainer(type))
+									.forEach(elem => container.appendChild(elem));
 
-							window.addEventListener('load', function () {
-								Array.from(document.querySelectorAll('.adduse'))
-									.forEach(elem => {
-										elem.addEventListener('click', e => {
-											e.preventDefault();
-											e.stopPropagation();
-											waitabit().then(addUse);
-											return false;
-										});
-										elem.click();
-									});
-							});
-						})();
+								container.addEventListener('click', e => {
+									if (e.target && e.target.matches('button')) {
+										e.preventDefault();
+										const button = e.target;
+										const container = button.parentElement.parentElement.querySelector('.remark-container');
+
+										const elem = makeRemarkBody(null, null, null, data.years);
+										const ta = elem.querySelector('textarea');
+										container
+											.appendChild(elem);
+										getAutosize().then(() => {
+											autosize(ta);
+										})
+									}
+								});
+
+								await Promise.all([populateCustomElems(), getAutosize()]);
+								autosize(container.querySelectorAll('textarea'));
+								Array.from(container.querySelectorAll('details')).forEach(e => e.addEventListener('toggle', (e) => {
+									autosize(e.target.querySelectorAll('textarea'));
+									autosize.update(e.target.querySelectorAll('textarea'));
+								}));
+							})());
 					</script>
-					<div class="form-group">
-						<button class="btn btn-primary pull-right adduse">Add use</button>
-					</div>
 
 					<div class="form-group" data-ajax-replace="ajax/submit-button.html"></div>
 				</form>
